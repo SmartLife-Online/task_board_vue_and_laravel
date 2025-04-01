@@ -78,3 +78,8 @@ export interface Habit {
     completed: number;
     points_upon_completion: number;
 }
+
+export interface User {
+    id: number;
+    points: number;
+}

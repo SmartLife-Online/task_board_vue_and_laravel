@@ -21,6 +21,8 @@ use App\Http\Controllers\HabitController;
 */
 
 Route::get('users/recalc_points', [UsersController::class, 'recalcPoints'])->name('users.recalcPoints');
+Route::patch('api/v1/users/{idUser}/recalc_user_points', [UsersController::class, 'recalcUserPoints'])->name('users.recalcUserPoints');
+Route::get('api/v1/users/{idUser}', [UsersController::class, 'get'])->name('api.users.get');
 
 Route::get('/refresh-csrf', function () {
     return response()->json(['csrf_token' => csrf_token()]);
@@ -63,7 +65,7 @@ Route::patch('api/v1/subtasks/{idSubtask}/complete', [SubtasksController::class,
 Route::get('api/v1/habits', [HabitController::class, 'index'])->name('api.habits.index');
 Route::get('api/v1/habits/not_complted', [HabitController::class, 'indexNotComplted'])->name('api.habits.indexNotComplted');
 Route::get('api/v1/habits/complted', [HabitController::class, 'indexComplted'])->name('api.habits.indexComplted');
-Route::get('api/v1/habits/{ididHabit}', [HabitController::class, 'get'])->name('api.habits.get');
+Route::get('api/v1/habits/{idHabit}', [HabitController::class, 'get'])->name('api.habits.get');
 Route::post('api/v1/habits/to_category/{idCategory}', [HabitController::class, 'storeToCategory'])->name('api.habits.to_category.store');
 Route::post('api/v1/habits/to_project/{idProject}', [HabitController::class, 'storeToProject'])->name('api.habits.to_project.store');
 Route::put('api/v1/habits/{idHabit}', [HabitController::class, 'update'])->name('api.habits.update');

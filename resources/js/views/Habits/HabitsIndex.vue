@@ -17,7 +17,7 @@
         {{ thField.label }}
       </th>
       <tr v-for="habit in habits" :key="habit.id">
-        <td>{{ habit.title }}</td>
+        <td @click="countUpCompletedInHabit(habit)" style="cursor: cell;">{{ habit.title }}</td>
         <td>{{ habit.category }}</td>
         <td>{{ habit.points_per_completion }}</td>
         <td>{{ habit.count_completed }}</td>

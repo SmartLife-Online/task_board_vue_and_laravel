@@ -9,6 +9,7 @@ const projectsApiString = apiString + 'projects/';
 const tasksApiString = apiString + 'tasks/';
 const subtasksApiString = apiString + 'subtasks/';
 const habitsApiString = apiString + 'habits/';
+const usersApiString = apiString + 'users/';
 
 const store = createStore({
   state: {
@@ -24,6 +25,7 @@ const store = createStore({
     subtask: [],
     habits: [],
     habit: [],
+    user: [],
   },
   mutations: {
     setLifeAreas(state, lifeAreas) {
@@ -61,6 +63,9 @@ const store = createStore({
     },
     setHabit(state, habit) {
       state.habit = habit;
+    },
+    setUser(state, user) {
+      state.user = user;
     },
   },
   actions: {
@@ -397,6 +402,23 @@ const store = createStore({
         console.error('Error completing Habit:', error);
       }
     },
+    async fetchUser({ commit }, idUser) {
+      try {
+        const response = await axios.get(usersApiString + idUser);
+        commit('setUser', response.data);
+      } catch (error) {
+        console.error('Error fetching User:', error);
+      }
+    },
+    async recalcUserPoints({ commit }, user) {
+      try {
+        const response = await axios.patch(usersApiString + user.id + '/recalc_user_points');
+        
+        user.points = response.data.points;
+      } catch (error) {
+        console.error('Error recalc user points:', error);
+      }
+    },
   },
   getters: {
     getLifeAreas: state => state.lifeAreas,
@@ -411,6 +433,7 @@ const store = createStore({
     getSubtask: state => state.subtask,
     getHabits: state => state.habits,
     getHabit: state => state.habit,
+    getUser: state => state.user,
   }
 });
 
