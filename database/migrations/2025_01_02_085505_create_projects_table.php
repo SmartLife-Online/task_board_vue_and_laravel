@@ -30,7 +30,7 @@ return new class extends Migration
 
             $table->index('user_id');
             $table->index('category_id');
-            $table->index('lief_area_id');
+            $table->index('life_area_id');
             $table->index('active');
         });
     }
