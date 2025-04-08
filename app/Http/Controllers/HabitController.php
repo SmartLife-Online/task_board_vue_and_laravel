@@ -151,6 +151,7 @@ class HabitController extends Controller
         $habit = Habit::find($idHabit);
 
         $habit->completed = 1;
+        $habit->completed_at = now();
 
         $habit->update();
 

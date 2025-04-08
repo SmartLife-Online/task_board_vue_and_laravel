@@ -96,6 +96,7 @@ class ProjectsController extends Controller
         $project = Project::find($idProject);
 
         $project->completed = 1;
+        $project->completed_at = now();
 
         $project->update();
 

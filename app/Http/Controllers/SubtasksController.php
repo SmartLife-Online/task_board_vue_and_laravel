@@ -98,6 +98,7 @@ class SubtasksController extends Controller
         $subtask = Subtask::find($idSubtask);
 
         $subtask->completed = 1;
+        $subtask->completed_at = now();
 
         $subtask->update();
 

@@ -118,6 +118,7 @@ class TasksController extends Controller
         $task = Task::find($idTask);
 
         $task->completed = 1;
+        $task->completed_at = now();
 
         $task->update();
 
