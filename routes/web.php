@@ -55,8 +55,8 @@ Route::put('api/v1/tasks/{idTask}', [TasksController::class, 'update'])->name('a
 Route::patch('api/v1/tasks/{idTask}/complete', [TasksController::class, 'complete'])->name('api.tasks.complete');
 
 Route::get('api/v1/subtasks', [SubtasksController::class, 'index'])->name('api.subtasks.index');
-Route::get('api/v1/subtasks/not_complted', [SubtasksController::class, 'indexNotComplted'])->name('api.subtasks.indexNotComplted');
-Route::get('api/v1/subtasks/complted', [SubtasksController::class, 'indexComplted'])->name('api.subtasks.indexComplted');
+Route::get('api/v1/subtasks/not_complted/{idTask?}', [SubtasksController::class, 'indexNotComplted'])->name('api.subtasks.indexNotComplted');
+Route::get('api/v1/subtasks/complted/{idTask?}', [SubtasksController::class, 'indexComplted'])->name('api.subtasks.indexComplted');
 Route::get('api/v1/subtasks/{idSubtask}', [SubtasksController::class, 'get'])->name('api.subtasks.get');
 Route::post('api/v1/subtasks/{idTask}', [SubtasksController::class, 'store'])->name('api.subtasks.store');
 Route::put('api/v1/subtasks/{idSubtask}', [SubtasksController::class, 'update'])->name('api.subtasks.update');

@@ -12,7 +12,7 @@
         All
       </option>
     </select>
-    <table id="tableComponent" class="table table-bordered table-striped">
+    <table v-if="subtasks.length !== 0" id="tableComponent" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
@@ -37,18 +37,31 @@
         </td>
       </tr>
     </table>
+    <div v-else class="alert alert-info">
+      <strong>Info!</strong> No subtasks found.
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { ThField } from '../../types/Table';
 import { Subtask } from '../../types/ModelsIndex';
 
 export default {
   name: 'SubtasksIndex',
-  setup() {
+  props: {
+    modal: {
+      type: Boolean,
+      default: false,
+    },
+    idTask: {
+      type: Number,
+      default: 0,
+    },
+  },
+  setup(props, { emit }) {
     const store = useStore();
     const thFields = ref<ThField[]>([
       {
@@ -83,8 +96,16 @@ export default {
       await changeCompletedFilter();
     });
 
+    watch(() => props.idTask, (newIdTask) => {
+      if(newIdTask === 0) return;
+
+      changeCompletedFilter();
+    }, { deep: true });
+
     const changeCompletedFilter = async () => {
-      await store.dispatch(filterCompleted.value);
+      if(props.modal && !props.idTask) return;
+
+      await store.dispatch(filterCompleted.value, props.idTask || 0);
       
       subtasks.value = store.getters.getSubtasks;
     };

@@ -15,14 +15,14 @@ class SubtasksController extends Controller
         return self::indexJSON(Subtask::all());
     }
 
-    public function indexNotComplted(): JsonResponse
+    public function indexNotComplted(?int $idTask = null): JsonResponse
     {
-        return self::indexJSON(Subtask::allNotComplted());
+        return self::indexJSON(Subtask::allNotComplted($idTask));
     }
 
-    public function indexComplted(): JsonResponse
+    public function indexComplted(?int $idTask = null): JsonResponse
     {
-        return self::indexJSON(Subtask::allComplted());
+        return self::indexJSON(Subtask::allComplted($idTask));
     }
 
     public function indexJSON(Collection $subtasks): JsonResponse

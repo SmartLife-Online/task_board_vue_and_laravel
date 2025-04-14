@@ -9,13 +9,21 @@ class Subtask extends Model
 {
     use ModelTrait;
 
-    public static function allNotComplted()
+    public static function allNotComplted(?int $idTask = null)
     {
+        if ($idTask) {
+            return self::where('completed', 0)->where('task_id', $idTask)->get();
+        }
+        
         return self::where('completed', 0)->get();
     }
 
-    public static function allComplted()
+    public static function allComplted(?int $idTask = null)
     {
+        if ($idTask) {
+            return self::where('completed', 1)->where('task_id', $idTask)->get();
+        }
+        
         return self::where('completed', 1)->get();
     }
 

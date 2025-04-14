@@ -263,17 +263,17 @@ const store = createStore({
         console.error('Error fetching Subtasks:', error);
       }
     },
-    async fetchNotCompltedSubtasks({ commit }) {
+    async fetchNotCompltedSubtasks({ commit }, idTask) {
       try {
-        const response = await axios.get(subtasksApiString + 'not_complted');
+        const response = await axios.get(subtasksApiString + 'not_complted' + (idTask ? ('/' + idTask) : ''));
         commit('setSubtasks', response.data);
       } catch (error) {
         console.error('Error fetching not compltedS Subtasks:', error);
       }
     },
-    async fetchCompltedSubtasks({ commit }) {
+    async fetchCompltedSubtasks({ commit }, idTask) {
       try {
-        const response = await axios.get(subtasksApiString + 'complted');
+        const response = await axios.get(subtasksApiString + 'complted' + (idTask ? ('/' + idTask) : ''));
         commit('setSubtasks', response.data);
       } catch (error) {
         console.error('Error fetching compltedS Subtasks:', error);

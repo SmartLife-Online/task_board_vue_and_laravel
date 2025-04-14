@@ -1,5 +1,6 @@
 <template>
   <div>
+    <SubtaksOfTaskModal :title="'Subtasks of &quot;' + subtasksOfTaskModalNameTask + '&quot;'" :idTask="subtasksOfTaskModalIdTask" @modalClosed="onModalClosed" />
     <h1>Tasks</h1>
     <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
       <option value="fetchNotCompltedTasks">
@@ -31,7 +32,12 @@
           <i v-if="task.description" class="btn btn-primary" :title="task.description">D</i>
         </td>
         <td>
-          <button v-if="!task.completed" @click="completeTask(task)" class="btn btn-primary" style="margin: 8px;">Complete</button>
+          <button v-if="!task.completed" @click="completeTask(task)" class="btn btn-primary" style="margin: 8px;">
+            Complete
+          </button>
+          <button id="modalButton" type="button" class="btn btn-primary" style="margin: 8px;" @click="subtasksOfTaskModalIdTask = task.id;subtasksOfTaskModalNameTask = task.title">
+            Subtasks
+          </button>
           <router-link :to="'/tasks/' + task.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
           <router-link :to="'/tasks/' + task.id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add subtask</router-link>
           <router-link :to="'/categories/' + task.category_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same category</router-link>
@@ -47,11 +53,17 @@ import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { ThField } from '../../types/Table';
 import { Task } from '../../types/ModelsIndex';
+import SubtaksOfTaskModal from '../../components/modals/SubtaksOfTaskModal.vue';
 
 export default {
   name: 'TasksIndex',
+  components: {
+    SubtaksOfTaskModal,
+  },
   setup() {
     const store = useStore();
+    const subtasksOfTaskModalIdTask = ref(null);
+    const subtasksOfTaskModalNameTask = ref(null);
     const thFields = ref<ThField[]>([
       {
         key: 'category',
@@ -103,8 +115,16 @@ export default {
       await store.dispatch('completeTask', task);
     };
 
+    const onModalClosed = () => {
+      subtasksOfTaskModalIdTask.value = 0;
+      subtasksOfTaskModalNameTask.value = '';
+    };
+
     return {
       thFields,
+      subtasksOfTaskModalIdTask,
+      subtasksOfTaskModalNameTask,
+      onModalClosed,
       tasks,
       filterCompleted,
       changeCompletedFilter,

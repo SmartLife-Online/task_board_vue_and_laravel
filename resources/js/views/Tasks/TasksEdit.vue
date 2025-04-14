@@ -40,7 +40,6 @@
         task.value = store.getters.getTask;
       });
 
-      
       const handleFormSubmit = async formData => {
         await store.dispatch('submitEditTask', {idTask, formData});
       };
