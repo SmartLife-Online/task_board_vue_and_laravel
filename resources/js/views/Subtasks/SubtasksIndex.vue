@@ -12,7 +12,7 @@
         All
       </option>
     </select>
-    <table v-if="subtasks.length !== 0" id="tableComponent" class="table table-bordered table-striped">
+    <table v-if="subtasks && subtasks.length !== 0" id="tableComponent" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
