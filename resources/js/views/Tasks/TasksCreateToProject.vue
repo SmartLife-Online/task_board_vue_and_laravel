@@ -1,6 +1,8 @@
 <template>
   <div>
     <h1>Add Task to Project {{ idProject }}</h1>
+    
+    <input v-model="chatgtp_input" @change="checkChatgtpInput">
     <TaskBoardFormular :rows="formRows" :entry="task" @submitForm="handleFormSubmit" />
   </div>
 </template>
@@ -12,6 +14,7 @@ import { FormField } from '../../types/Form';
 import { Task } from '../../types/ModelsForm';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
+import OpenAI from "openai";
 
 export default {
   name: 'ProjectsCreate',
@@ -21,6 +24,26 @@ export default {
   setup() {
     const route = useRoute();
     const store = useStore();
+    
+    const openai = new OpenAI({
+      apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+      maxRetries: 0
+    });
+    
+    const chatgtp_input = ref<string>('');
+    const checkChatgtpInput = async () => {
+      if(!chatgtp_input.value) return;
+
+      console.log('ChatGPT input:', chatgtp_input.value);
+
+      const response = await openai.responses.create({
+          model: "gpt-4.1-mini",
+          input: chatgtp_input.value,
+      });
+
+      console.log(response.output_text);
+    };
 
     const formRows = ref<FormField[][]>([
       [
@@ -44,6 +67,8 @@ export default {
     };
 
     return {
+      chatgtp_input,
+      checkChatgtpInput,
       formRows,
       idProject,
       task,
