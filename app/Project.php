@@ -9,6 +9,26 @@ class Project extends Model
 {
     use ModelTrait;
 
+    public static function findActive(int $idProject)
+    {
+        $project = self::where('id', $idProject)->where('active', 1)->first();
+
+        if(!$project) abort(response()->json(['message' => 'Project not found'], 404));
+
+        return $project;
+    }
+
+    public static function allActive(?int $idCategory = null)
+    {
+        $query = self::where('active', 1);
+
+        if ($idCategory) {
+            $query = $query->where('category_id', $idCategory);
+        }
+        
+        return $query->get();
+    }
+
     public static function allNotComplted()
     {
         return self::where('completed', 0)->orderBy('life_area_id')->orderBy('category_id')->get();

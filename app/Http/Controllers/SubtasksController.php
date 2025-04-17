@@ -10,9 +10,9 @@ use App\Task;
 
 class SubtasksController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(?int $idTask = null): JsonResponse
     {
-        return self::indexJSON(Subtask::all());
+        return self::indexJSON(Subtask::allActive($idTask));
     }
 
     public function indexNotComplted(?int $idTask = null): JsonResponse
@@ -53,14 +53,18 @@ class SubtasksController extends Controller
 
     public function get(int $idSubtask): JsonResponse
     {
-        $subtask = Subtask::find($idSubtask);
+        $subtask = Subtask::findActive($idSubtask);
+
+        if(!$subtask) {
+            return response()->json(['error' => 'Subtask not found'], 404);
+        }
 
         return response()->json($subtask);
     }
 
     public function store(int $idTask, Request $request): JsonResponse
     {
-        $task = Task::find($idTask);
+        $task = Task::findActive($idTask);
         if(!$task) {
             return response()->json(['error' => 'Task not found'], 404);
         }
@@ -82,7 +86,11 @@ class SubtasksController extends Controller
 
     public function update(int $idSubtask, Request $request): JsonResponse
     {
-        $subtask = Subtask::find($idSubtask);
+        $subtask = Subtask::findActive($idSubtask);
+
+        if(!$subtask) {
+            return response()->json(['error' => 'Subtask not found'], 404);
+        }
 
         $subtask->title = $request->title;
         $subtask->description = $request->description;
@@ -95,7 +103,11 @@ class SubtasksController extends Controller
 
     public function complete(int $idSubtask, Request $request): JsonResponse
     {
-        $subtask = Subtask::find($idSubtask);
+        $subtask = Subtask::findActive($idSubtask);
+
+        if(!$subtask) {
+            return response()->json(['error' => 'Subtask not found'], 404);
+        }
 
         $subtask->completed = 1;
         $subtask->completed_at = now();

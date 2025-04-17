@@ -9,6 +9,26 @@ class Habit extends Model
 {
     use ModelTrait;
 
+    public static function findActive(int $idHabit)
+    {
+        $habit = self::where('id', $idHabit)->where('active', 1)->first();
+
+        if(!$habit) abort(response()->json(['message' => 'Habit not found'], 404));
+
+        return $habit;
+    }
+
+    public static function allActive(?int $idProject = null)
+    {
+        $query = self::where('active', 1);
+
+        if ($idProject) {
+            $query = $query->where('project_id', $idProject);
+        }
+        
+        return $query->get();
+    }
+
     public static function allNotComplted()
     {
         return self::where('completed', 0)->orderBy('life_area_id')->orderBy('category_id')->get();

@@ -9,6 +9,26 @@ class Category extends Model
 {
     use ModelTrait;
 
+    public static function findActive(int $idCategory)
+    {
+        $category = self::where('id', $idCategory)->where('active', 1)->first();
+
+        if(!$category) abort(response()->json(['message' => 'Category not found'], 404));
+
+        return $category;
+    }
+
+    public static function allActive(?int $idLifeArea = null)
+    {
+        $query = self::where('active', 1);
+
+        if ($idLifeArea) {
+            $query = $query->where('life_area_id', $idLifeArea);
+        }
+        
+        return $query->get();
+    }
+
     public function lifeArea()
     {
         return $this->belongsTo(LifeArea::class);

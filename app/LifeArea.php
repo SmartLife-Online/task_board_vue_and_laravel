@@ -9,6 +9,20 @@ class LifeArea extends Model
 {
     use ModelTrait;
 
+    public static function findActive(int $idLifeArea)
+    {
+        $lifeArea = self::where('id', $idLifeArea)->where('active', 1)->first();
+
+        if(!$lifeArea) abort(response()->json(['message' => 'Life Area not found'], 404));
+
+        return $lifeArea;
+    }
+
+    public static function allActive()
+    {
+        $query = self::where('active', 1)->get();
+    }
+
     public function categories()
     {
         return $this->hasMany(Category::class);

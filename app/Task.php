@@ -9,6 +9,26 @@ class Task extends Model
 {
     use ModelTrait;
 
+    public static function findActive(int $idTask)
+    {
+        $task = self::where('id', $idTask)->where('active', 1)->first();
+
+        if(!$task) abort(response()->json(['message' => 'Task not found'], 404));
+
+        return $task;
+    }
+
+    public static function allActive(?int $idProject = null)
+    {
+        $query = self::where('active', 1);
+
+        if ($idProject) {
+            $query = $query->where('project_id', $idProject);
+        }
+        
+        return $query->get();
+    }
+
     public static function allNotComplted()
     {
         return self::where('completed', 0)->get();
