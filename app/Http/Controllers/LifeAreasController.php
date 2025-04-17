@@ -10,7 +10,7 @@ class LifeAreasController extends Controller
 {
     public function index(): JsonResponse
     {
-        $lifeAreas = LifeArea::all();
+        $lifeAreas = LifeArea::allActive();
 
         $lifeAreasJSON = [];
         
@@ -29,14 +29,20 @@ class LifeAreasController extends Controller
 
     public function get(int $idLifeArea): JsonResponse
     {
-        $lifeArea = LifeArea::find($idLifeArea);
+        $lifeArea = LifeArea::findActive($idLifeArea);
+        if(!$lifeArea) {
+            return response()->json(['error' => 'Life-Area not found'], 404);
+        }
 
         return response()->json($lifeArea);
     }
 
     public function update(int $idLifeArea, Request $request): JsonResponse
     {
-        $lifeArea = LifeArea::find($idLifeArea);
+        $lifeArea = LifeArea::findActive($idLifeArea);
+        if(!$lifeArea) {
+            return response()->json(['error' => 'Life-Area not found'], 404);
+        }
 
         $lifeArea->title = $request->title;
         $lifeArea->description = $request->description;

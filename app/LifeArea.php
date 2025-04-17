@@ -23,19 +23,19 @@ class LifeArea extends Model
         $query = self::where('active', 1)->get();
     }
 
-    public function categories()
-    {
-        return $this->hasMany(Category::class);
-    }
-
     public static function allSortedByTitle() {
-        return self::orderBy('title')->get();
+        return self::where('active', 1)->orderBy('title')->get();
     }
 
     public static function allFromUser() {
         $userId = Auth::id() ?? 1;
         
-        return self::where('user_id', $userId)->get();
+        return self::where('active', 1)->where('user_id', $userId)->get();
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class)->where('active', 1);
     }
     
     public function recalcPoints() {

@@ -31,7 +31,7 @@ class Subtask extends Model
 
     public static function allNotComplted(?int $idTask = null)
     {
-        $query = self::where('completed', 0)->where('active', 1);
+        $query = self::where('active', 1)->where('completed', 0);
 
         if ($idTask) {
             $query = $query->where('task_id', $idTask);
@@ -42,7 +42,7 @@ class Subtask extends Model
 
     public static function allComplted(?int $idTask = null)
     {
-        $query = self::where('completed', 1)->where('active', 1);
+        $query = self::where('active', 1)->where('completed', 1);
 
         if ($idTask) {
             $query = $query->where('task_id', $idTask);
@@ -51,28 +51,28 @@ class Subtask extends Model
         return $query->get();
     }
 
+    public static function allSortedByTask() {
+        return self::where('active', 1)->orderBy('task_id')->get();
+    }
+
     public function lifeArea()
     {
-        return $this->belongsTo(LifeArea::class);
+        return $this->belongsTo(LifeArea::class)->where('active', 1);
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->where('active', 1);
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class)->where('active', 1);
     }
 
     public function task()
     {
-        return $this->belongsTo(Task::class);
-    }
-
-    public static function allSortedByTask() {
-        return self::orderBy('task_id')->get();
+        return $this->belongsTo(Task::class)->where('active', 1);
     }
 
 }

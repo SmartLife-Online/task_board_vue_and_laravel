@@ -54,7 +54,6 @@ class SubtasksController extends Controller
     public function get(int $idSubtask): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
-
         if(!$subtask) {
             return response()->json(['error' => 'Subtask not found'], 404);
         }
@@ -87,7 +86,6 @@ class SubtasksController extends Controller
     public function update(int $idSubtask, Request $request): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
-
         if(!$subtask) {
             return response()->json(['error' => 'Subtask not found'], 404);
         }
@@ -104,7 +102,6 @@ class SubtasksController extends Controller
     public function complete(int $idSubtask, Request $request): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
-
         if(!$subtask) {
             return response()->json(['error' => 'Subtask not found'], 404);
         }

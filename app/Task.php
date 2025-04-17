@@ -31,36 +31,36 @@ class Task extends Model
 
     public static function allNotComplted()
     {
-        return self::where('completed', 0)->get();
+        return self::where('active', 1)->where('completed', 0)->get();
     }
 
     public static function allComplted()
     {
-        return self::where('completed', 1)->get();
+        return self::where('active', 1)->where('completed', 1)->get();
     }
 
     public function lifeArea()
     {
-        return $this->belongsTo(LifeArea::class);
+        return $this->belongsTo(LifeArea::class)->where('active', 1);
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->where('active', 1);
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class)->where('active', 1);
     }
 
     public function subtasks()
     {
-        return $this->hasMany(Subtask::class);
+        return $this->hasMany(Subtask::class)->where('active', 1);
     }
 
     public static function allSortedBylifeAreaAndCategoryAndProject() {
-        return self::orderBy('life_area_id')->orderBy('category_id')->orderBy('project_id')->get();
+        return self::where('active', 1)->orderBy('life_area_id')->orderBy('category_id')->orderBy('project_id')->get();
     }
     
     public function recalcPoints() {

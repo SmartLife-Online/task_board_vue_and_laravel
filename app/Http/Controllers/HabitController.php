@@ -55,14 +55,17 @@ class HabitController extends Controller
 
     public function get(int $idHabit): JsonResponse
     {
-        $habit = Habit::find($idHabit);
+        $habit = Habit::findActive($idHabit);
+        if(!$habit) {
+            return response()->json(['error' => 'Habit not found'], 404);
+        }
 
         return response()->json($habit);
     }
 
     public function storeToCategory(int $idCategory, Request $request): JsonResponse
     {
-        $category = Category::find($idCategory);
+        $category = Category::findActive($idCategory);
         if(!$category) {
             return response()->json(['error' => 'Category not found'], 404);
         }
@@ -85,7 +88,7 @@ class HabitController extends Controller
 
     public function storeToProject(int $idProject, Request $request): JsonResponse
     {
-        $project = Project::find($idProject);
+        $project = Project::findActive($idProject);
         if(!$project) {
             return response()->json(['error' => 'Project not found'], 404);
         }
@@ -108,7 +111,10 @@ class HabitController extends Controller
 
     public function update(int $idHabit, Request $request): JsonResponse
     {
-        $habit = Habit::find($idHabit);
+        $habit = Habit::findActive($idHabit);
+        if(!$habit) {
+            return response()->json(['error' => 'Habit not found'], 404);
+        }
 
         $habit->title = $request->title;
         $habit->description = $request->description;
@@ -122,7 +128,10 @@ class HabitController extends Controller
 
     public function countUpCompleted(int $idHabit, Request $request): JsonResponse
     {
-        $habit = Habit::find($idHabit);
+        $habit = Habit::findActive($idHabit);
+        if(!$habit) {
+            return response()->json(['error' => 'Habit not found'], 404);
+        }
 
         $habit->count_completed++;
 
@@ -133,7 +142,10 @@ class HabitController extends Controller
 
     public function countDownCompleted(int $idHabit, Request $request): JsonResponse
     {
-        $habit = Habit::find($idHabit);
+        $habit = Habit::findActive($idHabit);
+        if(!$habit) {
+            return response()->json(['error' => 'Habit not found'], 404);
+        }
 
         $habit->count_completed--;
         
@@ -148,7 +160,10 @@ class HabitController extends Controller
 
     public function complete(int $idHabit, Request $request): JsonResponse
     {
-        $habit = Habit::find($idHabit);
+        $habit = Habit::findActive($idHabit);
+        if(!$habit) {
+            return response()->json(['error' => 'Habit not found'], 404);
+        }
 
         $habit->completed = 1;
         $habit->completed_at = now();

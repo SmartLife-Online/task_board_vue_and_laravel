@@ -14,7 +14,7 @@ class TasksController extends Controller
 
     public function index(): JsonResponse
     {
-        return self::indexJSON(Task::all());
+        return self::indexJSON(Task::allActive());
     }
 
     public function indexNotComplted(): JsonResponse
@@ -53,14 +53,14 @@ class TasksController extends Controller
 
     public function get(int $idTask): JsonResponse
     {
-        $task = Task::find($idTask);
+        $task = Task::findActive($idTask);
 
         return response()->json($task);
     }
 
     public function storeToCategory(int $idCategory, Request $request): JsonResponse
     {
-        $category = Category::find($idCategory);
+        $category = Category::findActive($idCategory);
         if(!$category) {
             return response()->json(['error' => 'Category not found'], 404);
         }
@@ -81,7 +81,7 @@ class TasksController extends Controller
 
     public function storeToProject(int $idProject, Request $request): JsonResponse
     {
-        $project = Project::find($idProject);
+        $project = Project::findActive($idProject);
         if(!$project) {
             return response()->json(['error' => 'Project not found'], 404);
         }
@@ -102,7 +102,10 @@ class TasksController extends Controller
 
     public function update(int $idTask, Request $request): JsonResponse
     {
-        $task = Task::find($idTask);
+        $task = Task::findActive($idTask);
+        if(!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
 
         $task->title = $request->title;
         $task->description = $request->description;
@@ -115,7 +118,10 @@ class TasksController extends Controller
 
     public function complete(int $idTask, Request $request): JsonResponse
     {
-        $task = Task::find($idTask);
+        $task = Task::findActive($idTask);
+        if(!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
 
         $task->completed = 1;
         $task->completed_at = now();

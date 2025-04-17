@@ -257,7 +257,7 @@ const store = createStore({
     },
     async fetchSubtasks({ commit }, idTask) {
       try {
-        const response = await axios.get(subtasksApiString + 'all' (idTask ? ('/' + idTask) : ''));
+        const response = await axios.get(subtasksApiString + 'all' + (idTask ? ('/' + idTask) : ''));
         commit('setSubtasks', response.data);
       } catch (error) {
         console.error('Error fetching Subtasks:', error);

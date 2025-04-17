@@ -31,31 +31,31 @@ class Habit extends Model
 
     public static function allNotComplted()
     {
-        return self::where('completed', 0)->orderBy('life_area_id')->orderBy('category_id')->get();
+        return self::where('active', 1)->where('completed', 0)->orderBy('life_area_id')->orderBy('category_id')->get();
     }
 
     public static function allComplted()
     {
-        return self::where('completed', 1)->orderBy('life_area_id')->orderBy('category_id')->get();
+        return self::where('active', 1)->where('completed', 1)->orderBy('life_area_id')->orderBy('category_id')->get();
+    }
+
+    public static function allSortedBylifeAreaAndCategory() {
+        return self::where('active', 1)->orderBy('life_area_id')->orderBy('category_id')->get();
     }
 
     public function lifeArea()
     {
-        return $this->belongsTo(LifeArea::class);
+        return $this->belongsTo(LifeArea::class)->where('active', 1);
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->where('active', 1);
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
-    }
-
-    public static function allSortedBylifeAreaAndCategory() {
-        return self::orderBy('life_area_id')->orderBy('category_id')->get();
+        return $this->belongsTo(Project::class)->where('active', 1);
     }
 
     public function getPoints() {

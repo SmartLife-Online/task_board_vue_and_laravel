@@ -29,38 +29,38 @@ class Category extends Model
         return $query->get();
     }
 
+    public static function allSortedBylifeArea() {
+        return self::where('active', 1)->orderBy('life_area_id')->get();
+    }
+
     public function lifeArea()
     {
-        return $this->belongsTo(LifeArea::class);
+        return $this->belongsTo(LifeArea::class)->where('active', 1);
     }
 
     public function projects()
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(Project::class)->where('active', 1);
     }
 
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->where('active', 1);
     }
 
     public function tasksWithoutProject()
     {
-        return $this->hasMany(Task::class)->whereNull('project_id');
+        return $this->hasMany(Task::class)->where('active', 1)->whereNull('project_id');
     }
 
     public function habits()
     {
-        return $this->hasMany(Habit::class);
+        return $this->hasMany(Habit::class)->where('active', 1);
     }
 
     public function habitsWithoutProject()
     {
-        return $this->hasMany(Habit::class)->whereNull('project_id');
-    }
-
-    public static function allSortedBylifeArea() {
-        return self::orderBy('life_area_id')->get();
+        return $this->hasMany(Habit::class)->where('active', 1)->whereNull('project_id');
     }
     
     public function recalcPoints() {

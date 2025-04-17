@@ -51,14 +51,17 @@ class ProjectsController extends Controller
 
     public function get(int $idProject): JsonResponse
     {
-        $project = Project::find($idProject);
+        $project = Project::findActive($idProject);
+        if(!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
 
         return response()->json($project);
     }
 
     public function store(int $idCategory, Request $request): JsonResponse
     {
-        $category = Category::find($idCategory);
+        $category = Category::findActive($idCategory);
         if(!$category) {
             return response()->json(['error' => 'Category not found'], 404);
         }
@@ -79,7 +82,10 @@ class ProjectsController extends Controller
 
     public function update(int $idProject, Request $request): JsonResponse
     {
-        $project = Project::find($idProject);
+        $project = Project::findActive($idProject);
+        if(!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
 
         $project->title = $request->title;
         $project->description = $request->description;
@@ -93,7 +99,10 @@ class ProjectsController extends Controller
 
     public function complete(int $idProject, Request $request): JsonResponse
     {
-        $project = Project::find($idProject);
+        $project = Project::findActive($idProject);
+        if(!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
 
         $project->completed = 1;
         $project->completed_at = now();
