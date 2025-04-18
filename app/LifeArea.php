@@ -20,7 +20,7 @@ class LifeArea extends Model
 
     public static function allActive()
     {
-        $query = self::where('active', 1)->get();
+        return self::where('active', 1)->get();
     }
 
     public static function allSortedByTitle() {
