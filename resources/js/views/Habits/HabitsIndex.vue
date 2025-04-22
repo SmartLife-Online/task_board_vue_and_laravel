@@ -11,8 +11,14 @@
       <option value="fetchHabits">
         All
       </option>
+      <option value="fetchDeletedHabits">
+        Deleted
+      </option>
     </select>
-    <table id="tableComponent" class="table table-bordered table-striped">
+    <div v-if="habits === undefined" class="alert alert-info">
+      Loading habits...
+    </div>
+    <table v-else-if="habits.length !== 0" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
@@ -35,9 +41,13 @@
           <button v-if="!habit.completed" @click="completeHabit(habit)" class="btn btn-primary" style="margin: 8px;">Complete</button>
           <router-link :to="'/habits/' + habit.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
           <router-link :to="'/categories/' + habit.category_id + '/add_habit'" class="btn btn-primary" style="margin: 8px;">Add habit to same category</router-link>
+          <button v-if="habit.active" @click="deleteHabit(habit)" class="btn btn-primary" style="margin: 8px;">Delete</button>
         </td>
       </tr>
     </table>
+    <div v-else class="alert alert-warning">
+      No habits found.
+    </div>
   </div>
 </template>
 
@@ -110,6 +120,10 @@ export default {
       await store.dispatch('completeHabit', habit);
     };
 
+    const deleteHabit = async (habit) => {
+      await store.dispatch('deleteHabit', habit);
+    };
+
     return {
       thFields,
       habits,
@@ -118,6 +132,7 @@ export default {
       countUpCompletedInHabit,
       countDownCompletedInHabit,
       completeHabit,
+      deleteHabit
     };
   },
 };

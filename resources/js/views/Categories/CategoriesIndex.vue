@@ -1,7 +1,10 @@
 <template>
     <div>
       <h1>Categories</h1>
-      <table id="tableComponent" class="table table-bordered table-striped">
+      <div v-if="categories === undefined" class="alert alert-info">
+        Loading categories...
+      </div>
+      <table v-else-if="categories.length !== 0" class="table table-bordered table-striped">
         <th v-for="thField in thFields" :key="thField.key">
           {{ thField.label }}
         </th>
@@ -16,9 +19,13 @@
             <router-link :to="'/categories/' + category.id + '/add_project'" class="btn btn-primary" style="margin: 8px;">Add Project</router-link>
             <router-link :to="'/categories/' + category.id + '/add_task'" class="btn btn-primary" style="margin: 8px;">Add Task</router-link>
             <router-link :to="'/categories/' + category.id + '/add_habit'" class="btn btn-primary" style="margin: 8px;">Add Habit</router-link>
+            <button v-if="category.active" @click="deleteCategory(category)" class="btn btn-primary" style="margin: 8px;">Delete</button>
           </td>
         </tr>
       </table>
+      <div v-else class="alert alert-warning">
+        No categories found.
+      </div>
     </div>
   </template>
   
@@ -66,9 +73,14 @@
         categories.value = store.getters.getCategories;
       });
 
+      const deleteCategory = async (category) => {
+        await store.dispatch('deleteCategory', category);
+      };
+
       return {
         thFields,
         categories,
+        deleteCategory
       };
     },
   };

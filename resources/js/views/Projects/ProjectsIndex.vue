@@ -11,8 +11,14 @@
         <option value="fetchProjects">
           All
         </option>
+      <option value="fetchDeletedProjects">
+        Deleted
+      </option>
       </select>
-      <table id="tableComponent" class="table table-bordered table-striped">
+      <div v-if="projects === undefined" class="alert alert-info">
+        Loading projects...
+      </div>
+      <table v-else-if="projects.length !== 0" class="table table-bordered table-striped">
         <th v-for="thField in thFields" :key="thField.key">
           {{ thField.label }}
         </th>
@@ -29,9 +35,13 @@
             <router-link :to="'/projects/' + project.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
             <router-link :to="'/projects/' + project.id + '/add_task'" class="btn btn-primary" style="margin: 8px;">Add Task</router-link>
             <router-link :to="'/projects/' + project.id + '/add_habit'" class="btn btn-primary" style="margin: 8px;">Add Habit</router-link>
+            <button v-if="project.active" @click="deleteProject(project)" class="btn btn-primary" style="margin: 8px;">Delete</button>
           </td>
         </tr>
       </table>
+      <div v-else class="alert alert-warning">
+        No projects found.
+      </div>
     </div>
   </template>
   
@@ -96,12 +106,17 @@
         await store.dispatch('completeProject', project);
       };
 
+      const deleteProject = async (project) => {
+        await store.dispatch('deleteProject', project);
+      };
+
       return {
         thFields,
         projects,
         filterCompleted,
         changeCompletedFilter,
-        completeProject
+        completeProject,
+        deleteProject
       };
     },
   };

@@ -1,7 +1,10 @@
 <template>
     <div>
       <h1>Life-Areas</h1>
-      <table id="tableComponent" class="table table-bordered table-striped">
+      <div v-if="lifeAreas === undefined" class="alert alert-info">
+        Loading life-areas...
+      </div>
+      <table v-else-if="lifeAreas.length !== 0" class="table table-bordered table-striped">
         <th v-for="thField in thFields" :key="thField.key">
           {{ thField.label }}
         </th>
@@ -13,9 +16,13 @@
           <td>
             <router-link :to="'/life_areas/' + lifeArea.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
             <router-link :to="'/life_areas/' + lifeArea.id + '/add_category'" class="btn btn-primary" style="margin: 8px;">Add Category</router-link>
+            <button v-if="lifeArea.active" @click="deleteLifeArea(lifeArea)" class="btn btn-primary" style="margin: 8px;">Delete</button>
           </td>
         </tr>
       </table>
+      <div v-else class="alert alert-warning">
+        No life-areas found.
+      </div>
     </div>
   </template>
   
@@ -59,9 +66,14 @@
         lifeAreas.value = store.getters.getLifeAreas;
       });
 
+      const deleteLifeArea = async (lifeArea) => {
+        await store.dispatch('deleteLifeArea', lifeArea);
+      };
+
       return {
         thFields,
         lifeAreas,
+        deleteLifeArea
       };
     },
   };

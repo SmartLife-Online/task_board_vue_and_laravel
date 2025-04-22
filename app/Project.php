@@ -39,6 +39,11 @@ class Project extends Model
         return self::where('active', 1)->where('completed', 1)->orderBy('life_area_id')->orderBy('category_id')->get();
     }
 
+    public static function allDeleted()
+    {
+        return self::where('active', 0)->get();
+    }
+
     public function lifeArea()
     {
         return $this->belongsTo(LifeArea::class)->where('active', 1);

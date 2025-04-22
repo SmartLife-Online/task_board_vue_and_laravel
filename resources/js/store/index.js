@@ -94,6 +94,15 @@ const store = createStore({
         console.error('Error submitting life-area form data:', error);
       }
     },
+    async deleteLifeArea({ commit }, lifeArea) {
+      try {
+        const response = await axios.delete(lifeAreaApiString + lifeArea.id);
+        
+        lifeArea.active = false;
+      } catch (error) {
+        console.error('Error deleting life-area:', error);
+      }
+    },
     async fetchCategories({ commit }) {
       try {
         const response = await axios.get(categoriesApiString);
@@ -128,6 +137,15 @@ const store = createStore({
         console.error('Error submitting Category form data:', error);
       }
     },
+    async deleteCategory({ commit }, category) {
+      try {
+        const response = await axios.delete(categoriesApiString + category.id);
+        
+        category.active = false;
+      } catch (error) {
+        console.error('Error deleting Category:', error);
+      }
+    },
     async fetchProjects({ commit }) {
       try {
         const response = await axios.get(projectsApiString);
@@ -150,6 +168,14 @@ const store = createStore({
         commit('setProjects', response.data);
       } catch (error) {
         console.error('Error fetching Projects:', error);
+      }
+    },
+    async fetchDeletedProjects({ commit }) {
+      try {
+        const response = await axios.get(projectsApiString + 'deleted');
+        commit('setProjects', response.data);
+      } catch (error) {
+        console.error('Error fetching deleted Projects:', error);
       }
     },
     async fetchProject({ commit }, idProject) {
@@ -185,6 +211,15 @@ const store = createStore({
         project.completed = true;
       } catch (error) {
         console.error('Error completing project:', error);
+      }
+    },
+    async deleteProject({ commit }, project) {
+      try {
+        const response = await axios.delete(projectsApiString + project.id);
+        
+        project.active = false;
+      } catch (error) {
+        console.error('Error deleting Project:', error);
       }
     },
     async fetchTasks({ commit }) {
@@ -265,7 +300,7 @@ const store = createStore({
     },
     async deleteTask({ commit }, task) {
       try {
-        const response = await axios.patch(tasksApiString + task.id + '/delete');
+        const response = await axios.delete(tasksApiString + task.id);
         
         task.active = false;
       } catch (error) {
@@ -341,7 +376,7 @@ const store = createStore({
     },
     async deleteSubtask({ commit }, subtask) {
       try {
-        const response = await axios.patch(subtasksApiString + subtask.id + '/delete');
+        const response = await axios.delete(subtasksApiString + subtask.id);
         
         subtask.active = false;
       } catch (error) {
@@ -370,6 +405,14 @@ const store = createStore({
         commit('setHabits', response.data);
       } catch (error) {
         console.error('Error fetching Habits:', error);
+      }
+    },
+    async fetchDeletedHabits({ commit }) {
+      try {
+        const response = await axios.get(habitsApiString + 'deleted');
+        commit('setHabits', response.data);
+      } catch (error) {
+        console.error('Error fetching deleted Habits:', error);
       }
     },
     async fetchHabit({ commit }, idHabit) {
@@ -434,6 +477,15 @@ const store = createStore({
         habit.completed = true;
       } catch (error) {
         console.error('Error completing Habit:', error);
+      }
+    },
+    async deleteHabit({ commit }, habit) {
+      try {
+        const response = await axios.delete(habitsApiString + habit.id);
+        
+        habit.active = false;
+      } catch (error) {
+        console.error('Error deleting Habit:', error);
       }
     },
     async fetchUser({ commit }, idUser) {

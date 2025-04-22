@@ -26,6 +26,11 @@ class ProjectsController extends Controller
         return self::indexJSON(Project::allComplted());
     }
 
+    public function indexDeleted(): JsonResponse
+    {
+        return self::indexJSON(Project::allDeleted());
+    }
+
     public function indexJSON(Collection $projects): JsonResponse
     {
         $projectsJSON = [];
@@ -43,6 +48,7 @@ class ProjectsController extends Controller
                 'points_upon_completion' => $project->points_upon_completion,
                 'completed' => $project->completed,
                 'points_multiplier_in_percent' => $project->points_multiplier_in_percent,
+                'active' => $project->active,
             ];
         }
 
@@ -106,6 +112,20 @@ class ProjectsController extends Controller
 
         $project->completed = 1;
         $project->completed_at = now();
+
+        $project->update();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function delete(int $idProject): JsonResponse
+    {
+        $project = Project::findActive($idProject);
+        if(!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
+
+        $project->active = 0;
 
         $project->update();
 

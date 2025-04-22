@@ -27,6 +27,11 @@ class HabitController extends Controller
         return self::indexJSON(Habit::allComplted());
     }
 
+    public function indexDeleted(): JsonResponse
+    {
+        return self::indexJSON(Habit::allDeleted());
+    }
+
     public function indexJSON(Collection $habits): JsonResponse
     {
         $habitsJSON = [];
@@ -47,6 +52,7 @@ class HabitController extends Controller
                 'points' => $habit->getPoints(),
                 'points_upon_completion' => $habit->points_upon_completion,
                 'completed' => $habit->completed,
+                'active' => $habit->active,
             ];
         }
 
@@ -167,6 +173,20 @@ class HabitController extends Controller
 
         $habit->completed = 1;
         $habit->completed_at = now();
+
+        $habit->update();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function delete(int $idHabit): JsonResponse
+    {
+        $habit = Habit::findActive($idHabit);
+        if(!$habit) {
+            return response()->json(['error' => 'Habit not found'], 404);
+        }
+
+        $habit->active = 0;
 
         $habit->update();
 

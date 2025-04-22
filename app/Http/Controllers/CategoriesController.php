@@ -24,6 +24,7 @@ class CategoriesController extends Controller
                 'description' => $category->description,
                 'points' => $category->points,
                 'points_multiplier_in_percent' => $category->points_multiplier_in_percent,
+                'active' => $category->active,
             ];
         }
 
@@ -59,6 +60,9 @@ class CategoriesController extends Controller
     public function update(int $idCategory, Request $request): JsonResponse
     {
         $category = Category::find($idCategory);
+        if(!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
 
         $category->title = $request->title;
         $category->description = $request->description;
@@ -67,5 +71,19 @@ class CategoriesController extends Controller
         $category->update();
 
         return response()->json($category);
+    }
+
+    public function delete(int $idCategory): JsonResponse
+    {
+        $category = Category::findActive($idCategory);
+        if(!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        $category->active = 0;
+
+        $category->update();
+
+        return response()->json(['success' => true]);
     }
 }

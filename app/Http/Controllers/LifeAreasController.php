@@ -21,6 +21,7 @@ class LifeAreasController extends Controller
                 'description' => $lifeArea->description,
                 'points' => $lifeArea->points,
                 'points_multiplier_in_percent' => $lifeArea->points_multiplier_in_percent,
+                'active' => $lifeArea->active,
             ];
         }
 
@@ -51,5 +52,19 @@ class LifeAreasController extends Controller
         $lifeArea->update();
 
         return response()->json($lifeArea);
+    }
+
+    public function delete(int $idLifeArea): JsonResponse
+    {
+        $lifeArea = LifeArea::findActive($idLifeArea);
+        if(!$lifeArea) {
+            return response()->json(['error' => 'Life-Area not found'], 404);
+        }
+
+        $lifeArea->active = 0;
+
+        $lifeArea->update();
+
+        return response()->json(['success' => true]);
     }
 }
