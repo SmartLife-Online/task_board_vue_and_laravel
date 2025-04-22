@@ -211,6 +211,14 @@ const store = createStore({
         console.error('Error fetching Tasks:', error);
       }
     },
+    async fetchDeletedTasks({ commit }) {
+      try {
+        const response = await axios.get(tasksApiString + 'deleted');
+        commit('setTasks', response.data);
+      } catch (error) {
+        console.error('Error fetching deleted Tasks:', error);
+      }
+    },
     async fetchTask({ commit }, idTask) {
       try {
         const response = await axios.get(tasksApiString + idTask);
@@ -255,6 +263,15 @@ const store = createStore({
         console.error('Error completing Task:', error);
       }
     },
+    async deleteTask({ commit }, task) {
+      try {
+        const response = await axios.patch(tasksApiString + task.id + '/delete');
+        
+        task.active = false;
+      } catch (error) {
+        console.error('Error deleting Task:', error);
+      }
+    },
     async fetchSubtasks({ commit }, idTask) {
       try {
         const response = await axios.get(subtasksApiString + 'all' + (idTask ? ('/' + idTask) : ''));
@@ -268,7 +285,7 @@ const store = createStore({
         const response = await axios.get(subtasksApiString + 'not_complted' + (idTask ? ('/' + idTask) : ''));
         commit('setSubtasks', response.data);
       } catch (error) {
-        console.error('Error fetching not compltedS Subtasks:', error);
+        console.error('Error fetching not complted Subtasks:', error);
       }
     },
     async fetchCompltedSubtasks({ commit }, idTask) {
@@ -276,7 +293,15 @@ const store = createStore({
         const response = await axios.get(subtasksApiString + 'complted' + (idTask ? ('/' + idTask) : ''));
         commit('setSubtasks', response.data);
       } catch (error) {
-        console.error('Error fetching compltedS Subtasks:', error);
+        console.error('Error fetching complted Subtasks:', error);
+      }
+    },
+    async fetchDeletedSubtasks({ commit }, idTask) {
+      try {
+        const response = await axios.get(subtasksApiString + 'deleted' + (idTask ? ('/' + idTask) : ''));
+        commit('setSubtasks', response.data);
+      } catch (error) {
+        console.error('Error fetching deleted Subtasks:', error);
       }
     },
     async fetchSubtask({ commit }, idSubtask) {
@@ -312,6 +337,15 @@ const store = createStore({
         subtask.completed = true;
       } catch (error) {
         console.error('Error completing Subtask:', error);
+      }
+    },
+    async deleteSubtask({ commit }, subtask) {
+      try {
+        const response = await axios.patch(subtasksApiString + subtask.id + '/delete');
+        
+        subtask.active = false;
+      } catch (error) {
+        console.error('Error deleting Subtask:', error);
       }
     },
     async fetchHabits({ commit }) {

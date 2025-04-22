@@ -33,8 +33,6 @@
 </template>
 
 <script lang="ts">
-import { ref, watch } from 'vue';
-import { useStore } from 'vuex';
 import SubtasksIndex from '../../views/Subtasks/SubtasksIndex.vue';
 
 export default {
@@ -53,16 +51,6 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const store = useStore();
-    
-    watch(() => props.idTask, (newIdTask) => {
-      if(newIdTask === 0) return;
-      console.log('ID Task changed:', newIdTask);
-        //await store.dispatch('fetchTask', idTask);
-        
-        //task.value = store.getters.getTask;
-    }, { deep: true });
-    
     const closeModal = () => {
       emit('modalClosed', true); 
     };

@@ -51,6 +51,17 @@ class Subtask extends Model
         return $query->get();
     }
 
+    public static function allDeleted(?int $idTask = null)
+    {
+        $query = self::where('active', 0);
+
+        if ($idTask) {
+            $query = $query->where('task_id', $idTask);
+        }
+        
+        return $query->get();
+    }
+
     public static function allSortedByTask() {
         return self::where('active', 1)->orderBy('task_id')->get();
     }

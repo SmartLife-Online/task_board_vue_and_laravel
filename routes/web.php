@@ -48,19 +48,23 @@ Route::patch('api/v1/projects/{idProject}/complete', [ProjectsController::class,
 Route::get('api/v1/tasks', [TasksController::class, 'index'])->name('api.tasks.index');
 Route::get('api/v1/tasks/not_complted', [TasksController::class, 'indexNotComplted'])->name('api.tasks.indexNotComplted');
 Route::get('api/v1/tasks/complted', [TasksController::class, 'indexComplted'])->name('api.tasks.indexComplted');
+Route::get('api/v1/tasks/deleted', [TasksController::class, 'indexDeleted'])->name('api.tasks.indexDeleted');
 Route::get('api/v1/tasks/{idTask}', [TasksController::class, 'get'])->name('api.tasks.get');
 Route::post('api/v1/tasks/to_category/{idCategory}', [TasksController::class, 'storeToCategory'])->name('api.tasks.to_category.store');
 Route::post('api/v1/tasks/to_project/{idProject}', [TasksController::class, 'storeToProject'])->name('api.tasks.to_project.store');
 Route::put('api/v1/tasks/{idTask}', [TasksController::class, 'update'])->name('api.tasks.update');
 Route::patch('api/v1/tasks/{idTask}/complete', [TasksController::class, 'complete'])->name('api.tasks.complete');
+Route::patch('api/v1/tasks/{idTask}/delete', [TasksController::class, 'delete'])->name('api.tasks.delete');
 
 Route::get('api/v1/subtasks/all/{idTask?}', [SubtasksController::class, 'index'])->name('api.subtasks.index');
 Route::get('api/v1/subtasks/not_complted/{idTask?}', [SubtasksController::class, 'indexNotComplted'])->name('api.subtasks.indexNotComplted');
 Route::get('api/v1/subtasks/complted/{idTask?}', [SubtasksController::class, 'indexComplted'])->name('api.subtasks.indexComplted');
+Route::get('api/v1/subtasks/deleted/{idTask?}', [SubtasksController::class, 'indexDeleted'])->name('api.subtasks.indexDeleted');
 Route::get('api/v1/subtasks/{idSubtask}', [SubtasksController::class, 'get'])->name('api.subtasks.get');
 Route::post('api/v1/subtasks/{idTask}', [SubtasksController::class, 'store'])->name('api.subtasks.store');
 Route::put('api/v1/subtasks/{idSubtask}', [SubtasksController::class, 'update'])->name('api.subtasks.update');
 Route::patch('api/v1/subtasks/{idSubtask}/complete', [SubtasksController::class, 'complete'])->name('api.subtasks.complete');
+Route::patch('api/v1/subtasks/{idSubtask}/delete', [SubtasksController::class, 'delete'])->name('api.subtasks.delete');
 
 Route::get('api/v1/habits', [HabitController::class, 'index'])->name('api.habits.index');
 Route::get('api/v1/habits/not_complted', [HabitController::class, 'indexNotComplted'])->name('api.habits.indexNotComplted');

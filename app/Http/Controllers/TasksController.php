@@ -27,6 +27,11 @@ class TasksController extends Controller
         return self::indexJSON(Task::allComplted());
     }
 
+    public function indexDeleted(): JsonResponse
+    {
+        return self::indexJSON(Task::allDeleted());
+    }
+
     public function indexJSON(Collection $tasks): JsonResponse
     {
         $tasksJSON = [];
@@ -45,6 +50,7 @@ class TasksController extends Controller
                 'points' => $task->points,
                 'points_upon_completion' => $task->points_upon_completion,
                 'completed' => $task->completed,
+                'active' => $task->active,
             ];
         }
 
@@ -125,6 +131,20 @@ class TasksController extends Controller
 
         $task->completed = 1;
         $task->completed_at = now();
+
+        $task->update();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function delete(int $idTask): JsonResponse
+    {
+        $task = Task::findActive($idTask);
+        if(!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $task->active = 0;
 
         $task->update();
 

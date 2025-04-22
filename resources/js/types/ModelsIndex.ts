@@ -4,6 +4,7 @@ export interface LifeArea {
     description: string;
     points: number;
     points_multiplier_in_percent: number;
+    active: boolean;
 }
 
 export interface Category {
@@ -14,6 +15,7 @@ export interface Category {
     description: string;
     points: number;
     points_multiplier_in_percent: number;
+    active: boolean;
 }
 
 export interface Project {
@@ -28,6 +30,7 @@ export interface Project {
     points_upon_completion: number;
     points_multiplier_in_percent: number;
     completed: number;
+    active: boolean;
 }
 
 export interface Task {
@@ -43,6 +46,7 @@ export interface Task {
     points: number;
     points_upon_completion: number;
     completed: number;
+    active: boolean;
 }
 
 export interface Subtask {
@@ -60,6 +64,7 @@ export interface Subtask {
     points: number;
     points_upon_completion: number;
     completed: number;
+    active: boolean;
 }
 
 export interface Habit {
@@ -77,9 +82,11 @@ export interface Habit {
     points: number;
     completed: number;
     points_upon_completion: number;
+    active: boolean;
 }
 
 export interface User {
     id: number;
     points: number;
+    active: boolean;
 }

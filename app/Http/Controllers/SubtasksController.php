@@ -25,6 +25,11 @@ class SubtasksController extends Controller
         return self::indexJSON(Subtask::allComplted($idTask));
     }
 
+    public function indexDeleted(?int $idTask = null): JsonResponse
+    {
+        return self::indexJSON(Subtask::allDeleted($idTask));
+    }
+
     public function indexJSON(Collection $subtasks): JsonResponse
     {
         $subtasksJSON = [];
@@ -45,6 +50,7 @@ class SubtasksController extends Controller
                 'points' => $subtask->points,
                 'points_upon_completion' => $subtask->points_upon_completion,
                 'completed' => $subtask->completed,
+                'active' => $subtask->active,
             ];
         }
 
@@ -99,7 +105,7 @@ class SubtasksController extends Controller
         return response()->json($subtask);
     }
 
-    public function complete(int $idSubtask, Request $request): JsonResponse
+    public function complete(int $idSubtask): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
         if(!$subtask) {
@@ -108,6 +114,20 @@ class SubtasksController extends Controller
 
         $subtask->completed = 1;
         $subtask->completed_at = now();
+
+        $subtask->update();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function delete(int $idSubtask): JsonResponse
+    {
+        $subtask = Subtask::findActive($idSubtask);
+        if(!$subtask) {
+            return response()->json(['error' => 'Subtask not found'], 404);
+        }
+
+        $subtask->active = 0;
 
         $subtask->update();
 

@@ -12,8 +12,14 @@
       <option value="fetchTasks">
         All
       </option>
+      <option value="fetchDeletedTasks">
+        Deleted
+      </option>
     </select>
-    <table id="tableComponent" class="table table-bordered table-striped">
+    <div v-if="tasks === undefined" class="alert alert-info">
+      Loading tasks...
+    </div>
+    <table v-else-if="tasks.length !== 0" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
@@ -42,9 +48,13 @@
           <router-link :to="'/tasks/' + task.id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add subtask</router-link>
           <router-link :to="'/categories/' + task.category_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same category</router-link>
           <router-link :to="'/projects/' + task.project_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same project</router-link>
+          <button v-if="task.active" @click="deleteTask(task)" class="btn btn-primary" style="margin: 8px;">Delete</button>
         </td>
       </tr>
     </table>
+    <div v-else class="alert alert-warning">
+      No tasks found.
+    </div>
   </div>
 </template>
 
@@ -62,8 +72,8 @@ export default {
   },
   setup() {
     const store = useStore();
-    const subtasksOfTaskModalIdTask = ref(null);
-    const subtasksOfTaskModalNameTask = ref(null);
+    const subtasksOfTaskModalIdTask = ref<number>(0);
+    const subtasksOfTaskModalNameTask = ref<string>('');
     const thFields = ref<ThField[]>([
       {
         key: 'category',
@@ -120,6 +130,10 @@ export default {
       subtasksOfTaskModalNameTask.value = '';
     };
 
+    const deleteTask = async (task) => {
+      await store.dispatch('deleteTask', task);
+    };
+
     return {
       thFields,
       subtasksOfTaskModalIdTask,
@@ -128,7 +142,8 @@ export default {
       tasks,
       filterCompleted,
       changeCompletedFilter,
-      completeTask
+      completeTask,
+      deleteTask
     };
   },
 };

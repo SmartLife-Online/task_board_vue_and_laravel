@@ -11,8 +11,14 @@
       <option value="fetchSubtasks">
         All
       </option>
+      <option value="fetchDeletedSubtasks">
+        Deleted
+      </option>
     </select>
-    <table v-if="subtasks && subtasks.length !== 0" id="tableComponent" class="table table-bordered table-striped">
+    <div v-if="subtasks === undefined" class="alert alert-info">
+      Loading subtasks...
+    </div>
+    <table v-else-if="subtasks && subtasks.length !== 0" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
@@ -34,11 +40,12 @@
           <button v-if="!subtask.completed" @click="completeSubtask(subtask)" class="btn btn-primary" style="margin: 8px;">Complete</button>
           <router-link :to="'/subtasks/' + subtask.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
           <router-link :to="'/tasks/' + subtask.task_id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add Subtask to same Task</router-link>
+          <button v-if="subtask.active" @click="deleteSubtask(subtask)" class="btn btn-primary" style="margin: 8px;">Delete</button>
         </td>
       </tr>
     </table>
-    <div v-else class="alert alert-info">
-      <strong>Info!</strong> No subtasks found.
+    <div v-else class="alert alert-warning">
+      No subtasks found.
     </div>
   </div>
 </template>
@@ -114,12 +121,17 @@ export default {
       await store.dispatch('completeSubtask', subtask);
     };
 
+    const deleteSubtask = async (subtask) => {
+      await store.dispatch('deleteSubtask', subtask);
+    };
+
     return {
       thFields,
       subtasks,
       filterCompleted,
       changeCompletedFilter,
-      completeSubtask
+      completeSubtask,
+      deleteSubtask
     };
   },
 };
