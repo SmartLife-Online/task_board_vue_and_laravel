@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>Add Project to Category {{ idCategory }}</h1>
+      <h1>Add Project to Project {{ idProject }}</h1>
       <TaskBoardFormular :rows="formRows" :entry="project" @submitForm="handleFormSubmit" />
     </div>
   </template>
@@ -14,7 +14,7 @@
   import { useStore } from 'vuex';
 
   export default {
-    name: 'ProjectsCreate',
+    name: 'ProjectsCreateToProject',
     components: {
       TaskBoardFormular
     },
@@ -33,7 +33,7 @@
         ]
       ]);
 
-      const idCategory = parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
+      const idProject = parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
       const project = ref<Project>({
         title: '',
         description: '',
@@ -42,12 +42,12 @@
       });
       
       const handleFormSubmit = async formData => {
-        const data = await store.dispatch('submitStoreProject', {idCategory, formData});
+        const data = await store.dispatch('submitStoreProjectToCategory', {idProject, formData});
       };
 
       return {
         formRows,
-        idCategory,
+        idProject,
         project,
         handleFormSubmit
       };

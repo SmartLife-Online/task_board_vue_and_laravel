@@ -186,9 +186,18 @@ const store = createStore({
         console.error('Error fetching Project:', error);
       }
     },
-    async submitStoreProject({ commit }, {idCategory, formData}) {
+    async submitStoreProjectToCategory({ commit }, {idCategory, formData}) {
       try {
-        const response = await axios.post(projectsApiString + idCategory, formData);
+        const response = await axios.post(projectsApiString + 'store_to_category/' + idCategory, formData);
+        commit('setProject', response.data);
+        router.push({ name: 'ProjectsIndex' });
+      } catch (error) {
+        console.error('Error submitting Project form data:', error);
+      }
+    },
+    async submitStoreProjectToProject({ commit }, {idCategory, formData}) {
+      try {
+        const response = await axios.post(projectsApiString + 'store_to_parent_proect/' + idCategory, formData);
         commit('setProject', response.data);
         router.push({ name: 'ProjectsIndex' });
       } catch (error) {

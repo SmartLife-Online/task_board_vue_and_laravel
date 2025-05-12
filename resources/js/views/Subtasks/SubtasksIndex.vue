@@ -72,12 +72,12 @@ export default {
     const store = useStore();
     const thFields = ref<ThField[]>([
       {
-        key: 'title',
-        label: 'Title',
-      },
-      {
         key: 'task',
         label: 'Task',
+      },
+      {
+        key: 'title',
+        label: 'Title',
       },
       {
         key: 'points_upon_completion',

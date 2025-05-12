@@ -33,6 +33,7 @@
           <td>
             <button v-if="!project.completed" @click="completeProject(project)" class="btn btn-primary" style="margin: 8px;">Complete</button>
             <router-link :to="'/projects/' + project.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
+            <router-link :to="'/projects/' + project.id + '/add_project_to_project'" class="btn btn-primary" style="margin: 8px;">Add Sub-Project</router-link>
             <router-link :to="'/projects/' + project.id + '/add_task'" class="btn btn-primary" style="margin: 8px;">Add Task</router-link>
             <router-link :to="'/projects/' + project.id + '/add_habit'" class="btn btn-primary" style="margin: 8px;">Add Habit</router-link>
             <button v-if="project.active" @click="deleteProject(project)" class="btn btn-primary" style="margin: 8px;">Delete</button>

@@ -6,7 +6,8 @@ import CategoriesIndex from '../views/Categories/CategoriesIndex.vue';
 import CategoriesCreate from '../views/Categories/CategoriesCreate.vue';
 import CategoriesEdit from '../views/Categories/CategoriesEdit.vue';
 import ProjectsIndex from '../views/Projects/ProjectsIndex.vue';
-import ProjectsCreate from '../views/Projects/ProjectsCreate.vue';
+import ProjectsCreateToCategory from '../views/Projects/ProjectsCreateToCategory.vue';
+import ProjectsCreateToProject from '../views/Projects/ProjectsCreateToProject.vue';
 import ProjectsEdit from '../views/Projects/ProjectsEdit.vue';
 import TasksIndex from '../views/Tasks/TasksIndex.vue';
 import TasksCreateToCategory from '../views/Tasks/TasksCreateToCategory.vue';
@@ -52,9 +53,14 @@ const routes = [
     component: CategoriesEdit
   },
   {
-    path: '/categories/:id/add_project',
-    name: 'ProjectsCreate',
-    component: ProjectsCreate
+    path: '/categories/:id/add_project_to_category',
+    name: 'ProjectsCreateToCategory',
+    component: ProjectsCreateToCategory
+  },
+  {
+    path: '/projects/:id/add_project_to_project',
+    name: 'ProjectsCreateToProject',
+    component: ProjectsCreateToProject
   },
   {
     path: '/categories/:id/add_task',

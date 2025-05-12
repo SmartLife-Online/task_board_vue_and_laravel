@@ -44,7 +44,8 @@ Route::get('api/v1/projects/not_complted', [ProjectsController::class, 'indexNot
 Route::get('api/v1/projects/complted', [ProjectsController::class, 'indexComplted'])->name('api.projects.indexComplted');
 Route::get('api/v1/projects/deleted', [ProjectsController::class, 'indexDeleted'])->name('api.projects.indexDeleted');
 Route::get('api/v1/projects/{idProject}', [ProjectsController::class, 'get'])->name('api.projects.get');
-Route::post('api/v1/projects/{idCategory}', [ProjectsController::class, 'store'])->name('api.projects.store');
+Route::post('api/v1/projects/store_to_category/{idCategory}', [ProjectsController::class, 'storeToCategory'])->name('api.projects.storeToCategory');
+Route::post('api/v1/projects/store_to_parent_proect/{idProject}', [ProjectsController::class, 'store'])->name('api.projects.store_to_parent_proect');
 Route::put('api/v1/projects/{idProject}', [ProjectsController::class, 'update'])->name('api.projects.update');
 Route::patch('api/v1/projects/{idProject}/complete', [ProjectsController::class, 'complete'])->name('api.projects.complete');
 Route::delete('api/v1/projects/{idProject}', [ProjectsController::class, 'delete'])->name('api.projects.delete');

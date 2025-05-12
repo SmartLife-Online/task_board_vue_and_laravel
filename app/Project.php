@@ -54,6 +54,16 @@ class Project extends Model
         return $this->belongsTo(Category::class)->where('active', 1);
     }
 
+    public function parentProject()
+    {
+        return $this->belongsTo(Project::class, 'id', 'id_parent_project')->where('active', 1);
+    }
+
+    public function childProjects()
+    {
+        return $this->hasMany(Project::class, 'id_parent_project', 'id')->where('active', 1);
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class)->where('active', 1);

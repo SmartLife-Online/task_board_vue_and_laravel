@@ -16,7 +16,7 @@
           <td>{{ category.points }}</td>
           <td>
             <router-link :to="'/categories/' + category.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
-            <router-link :to="'/categories/' + category.id + '/add_project'" class="btn btn-primary" style="margin: 8px;">Add Project</router-link>
+            <router-link :to="'/categories/' + category.id + '/add_project_to_category'" class="btn btn-primary" style="margin: 8px;">Add Project</router-link>
             <router-link :to="'/categories/' + category.id + '/add_task'" class="btn btn-primary" style="margin: 8px;">Add Task</router-link>
             <router-link :to="'/categories/' + category.id + '/add_habit'" class="btn btn-primary" style="margin: 8px;">Add Habit</router-link>
             <button v-if="category.active" @click="deleteCategory(category)" class="btn btn-primary" style="margin: 8px;">Delete</button>

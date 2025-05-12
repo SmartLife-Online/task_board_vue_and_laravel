@@ -65,7 +65,7 @@ class ProjectsController extends Controller
         return response()->json($project);
     }
 
-    public function store(int $idCategory, Request $request): JsonResponse
+    public function storeToCategory(int $idCategory, Request $request): JsonResponse
     {
         $category = Category::findActive($idCategory);
         if(!$category) {
@@ -76,6 +76,28 @@ class ProjectsController extends Controller
         
         $project->life_area_id = $category->life_area_id;
         $project->category_id = $category->id;
+        $project->title = $request->title;
+        $project->description = $request->description;
+        $project->points_multiplier_in_percent = $request->points_multiplier_in_percent ?? 100;
+        $project->points_upon_completion = $request->points_upon_completion ?? 0;
+
+        $project->save();
+
+        return response()->json($project);
+    }
+
+    public function storeToProject(int $idProject, Request $request): JsonResponse
+    {
+        $project = Project::findActive($idProject);
+        if(!$project) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        $project = new Project();
+        
+        $project->life_area_id = $project->life_area_id;
+        $project->category_id = $project->category_id;
+        $project->id_parent_project = $project->id;
         $project->title = $request->title;
         $project->description = $request->description;
         $project->points_multiplier_in_percent = $request->points_multiplier_in_percent ?? 100;
