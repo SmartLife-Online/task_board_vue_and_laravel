@@ -195,9 +195,9 @@ const store = createStore({
         console.error('Error submitting Project form data:', error);
       }
     },
-    async submitStoreProjectToProject({ commit }, {idCategory, formData}) {
+    async submitStoreProjectToProject({ commit }, {idProject, formData}) {
       try {
-        const response = await axios.post(projectsApiString + 'store_to_parent_proect/' + idCategory, formData);
+        const response = await axios.post(projectsApiString + 'store_to_parent_project/' + idProject, formData);
         commit('setProject', response.data);
         router.push({ name: 'ProjectsIndex' });
       } catch (error) {

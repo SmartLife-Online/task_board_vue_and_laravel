@@ -88,5 +88,7 @@ export interface Habit {
 export interface User {
     id: number;
     points: number;
+    seasonBasisPoints: number;
+    seasonPoints: number;
     active: boolean;
 }

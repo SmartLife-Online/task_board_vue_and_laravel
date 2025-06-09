@@ -14,6 +14,8 @@ class UsersController extends Controller
     {
         $user = User::find($idUser);
 
+        $user->setSeasonPoints();
+
         return response()->json($user);
     }
 

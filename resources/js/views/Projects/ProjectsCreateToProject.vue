@@ -34,6 +34,7 @@
       ]);
 
       const idProject = parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
+      
       const project = ref<Project>({
         title: '',
         description: '',
@@ -42,7 +43,7 @@
       });
       
       const handleFormSubmit = async formData => {
-        const data = await store.dispatch('submitStoreProjectToCategory', {idProject, formData});
+        const data = await store.dispatch('submitStoreProjectToProject', {idProject, formData});
       };
 
       return {

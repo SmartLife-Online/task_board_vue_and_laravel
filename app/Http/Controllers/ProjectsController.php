@@ -58,9 +58,7 @@ class ProjectsController extends Controller
     public function get(int $idProject): JsonResponse
     {
         $project = Project::findActive($idProject);
-        if(!$project) {
-            return response()->json(['error' => 'Project not found'], 404);
-        }
+        if(!$project) return response()->json(['error' => 'Project not found'], 404);
 
         return response()->json($project);
     }
@@ -68,9 +66,7 @@ class ProjectsController extends Controller
     public function storeToCategory(int $idCategory, Request $request): JsonResponse
     {
         $category = Category::findActive($idCategory);
-        if(!$category) {
-            return response()->json(['error' => 'Category not found'], 404);
-        }
+        if(!$category) return response()->json(['error' => 'Category not found'], 404);
 
         $project = new Project();
         
@@ -88,16 +84,14 @@ class ProjectsController extends Controller
 
     public function storeToProject(int $idProject, Request $request): JsonResponse
     {
-        $project = Project::findActive($idProject);
-        if(!$project) {
-            return response()->json(['error' => 'Category not found'], 404);
-        }
+        $parentProject = Project::findActive($idProject);
+        if(!$parentProject) return response()->json(['error' => 'Project not found'], 404);
 
         $project = new Project();
         
-        $project->life_area_id = $project->life_area_id;
-        $project->category_id = $project->category_id;
-        $project->id_parent_project = $project->id;
+        $project->life_area_id = $parentProject->life_area_id;
+        $project->category_id = $parentProject->category_id;
+        $project->id_parent_project = $parentProject->id;
         $project->title = $request->title;
         $project->description = $request->description;
         $project->points_multiplier_in_percent = $request->points_multiplier_in_percent ?? 100;
@@ -111,9 +105,7 @@ class ProjectsController extends Controller
     public function update(int $idProject, Request $request): JsonResponse
     {
         $project = Project::findActive($idProject);
-        if(!$project) {
-            return response()->json(['error' => 'Project not found'], 404);
-        }
+        if(!$project) return response()->json(['error' => 'Project not found'], 404);
 
         $project->title = $request->title;
         $project->description = $request->description;
@@ -128,9 +120,7 @@ class ProjectsController extends Controller
     public function complete(int $idProject, Request $request): JsonResponse
     {
         $project = Project::findActive($idProject);
-        if(!$project) {
-            return response()->json(['error' => 'Project not found'], 404);
-        }
+        if(!$project) return response()->json(['error' => 'Project not found'], 404);
 
         $project->completed = 1;
         $project->completed_at = now();
@@ -143,9 +133,7 @@ class ProjectsController extends Controller
     public function delete(int $idProject): JsonResponse
     {
         $project = Project::findActive($idProject);
-        if(!$project) {
-            return response()->json(['error' => 'Project not found'], 404);
-        }
+        if(!$project) return response()->json(['error' => 'Project not found'], 404);
 
         $project->active = 0;
 
