@@ -1,10 +1,10 @@
 <template>
   <div>
     <form v-if="typeof entry !== 'undefined'" @submit.prevent="handleSubmit">
-      <div v-for="(row, index) in rows" :key="index" class="row">
-        <div v-for="(field, index) in row" :key="index" class="col-md-6 form-group">
+      <div v-for="(row, rowIndex) in rows" :key="rowIndex" class="row">
+        <div v-for="(field, colIndex) in row" :key="colIndex" class="col-md-6 form-group">
           <label :for="field.name">{{ field.label }}</label>
-          <input :type="field.type || 'text'" v-model="entry[field.name]" class="form-control">
+          <input :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
         </div>
       </div>
       <br>
