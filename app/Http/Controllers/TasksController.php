@@ -137,6 +137,16 @@ class TasksController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function recalcTask(int $idTask, Request $request): JsonResponse
+    {
+        $task = Task::findActive($idTask);
+        if(!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        return response()->json(['points' => $task->recalcPoints()]);
+    }
+
     public function delete(int $idTask): JsonResponse
     {
         $task = Task::findActive($idTask);

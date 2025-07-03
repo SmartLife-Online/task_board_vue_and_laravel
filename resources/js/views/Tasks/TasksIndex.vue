@@ -48,6 +48,7 @@
           <router-link :to="'/tasks/' + task.id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add subtask</router-link>
           <router-link :to="'/categories/' + task.category_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same category</router-link>
           <router-link :to="'/projects/' + task.project_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same project</router-link>
+          <button v-if="task.active" @click="recalcTask(task)" class="btn btn-primary" style="margin: 8px;">Recalc</button>
           <button v-if="task.active" @click="deleteTask(task)" class="btn btn-primary" style="margin: 8px;">Delete</button>
         </td>
       </tr>
@@ -130,6 +131,11 @@ export default {
       subtasksOfTaskModalNameTask.value = '';
     };
 
+    const recalcTask = async (task) => {
+      await store.dispatch('recalcTask', task);
+    };
+
+
     const deleteTask = async (task) => {
       await store.dispatch('deleteTask', task);
     };
@@ -143,6 +149,7 @@ export default {
       filterCompleted,
       changeCompletedFilter,
       completeTask,
+      recalcTask,
       deleteTask
     };
   },
