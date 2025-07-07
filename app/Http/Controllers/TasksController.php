@@ -12,24 +12,24 @@ use App\Category;
 class TasksController extends Controller
 {
 
-    public function index(): JsonResponse
+    public function index(?int $idProject = null): JsonResponse
     {
-        return self::indexJSON(Task::allActive());
+        return self::indexJSON(Task::allActive($idProject));
     }
 
-    public function indexNotComplted(): JsonResponse
+    public function indexNotComplted(?int $idProject = null): JsonResponse
     {
-        return self::indexJSON(Task::allNotComplted());
+        return self::indexJSON(Task::allNotComplted($idProject));
     }
 
-    public function indexComplted(): JsonResponse
+    public function indexComplted(?int $idProject = null): JsonResponse
     {
-        return self::indexJSON(Task::allComplted());
+        return self::indexJSON(Task::allComplted($idProject));
     }
 
-    public function indexDeleted(): JsonResponse
+    public function indexDeleted(?int $idProject = null): JsonResponse
     {
-        return self::indexJSON(Task::allDeleted());
+        return self::indexJSON(Task::allDeleted($idProject));
     }
 
     public function indexJSON(Collection $tasks): JsonResponse

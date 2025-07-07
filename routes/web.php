@@ -50,10 +50,10 @@ Route::put('api/v1/projects/{idProject}', [ProjectsController::class, 'update'])
 Route::patch('api/v1/projects/{idProject}/complete', [ProjectsController::class, 'complete'])->name('api.projects.complete');
 Route::delete('api/v1/projects/{idProject}', [ProjectsController::class, 'delete'])->name('api.projects.delete');
 
-Route::get('api/v1/tasks', [TasksController::class, 'index'])->name('api.tasks.index');
-Route::get('api/v1/tasks/not_complted', [TasksController::class, 'indexNotComplted'])->name('api.tasks.indexNotComplted');
-Route::get('api/v1/tasks/complted', [TasksController::class, 'indexComplted'])->name('api.tasks.indexComplted');
-Route::get('api/v1/tasks/deleted', [TasksController::class, 'indexDeleted'])->name('api.tasks.indexDeleted');
+Route::get('api/v1/tasks/all/{idProject?}', [TasksController::class, 'index'])->name('api.tasks.index');
+Route::get('api/v1/tasks/not_complted/{idProject?}', [TasksController::class, 'indexNotComplted'])->name('api.tasks.indexNotComplted');
+Route::get('api/v1/tasks/complted/{idProject?}', [TasksController::class, 'indexComplted'])->name('api.tasks.indexComplted');
+Route::get('api/v1/tasks/deleted/{idProject?}', [TasksController::class, 'indexDeleted'])->name('api.tasks.indexDeleted');
 Route::get('api/v1/tasks/{idTask}', [TasksController::class, 'get'])->name('api.tasks.get');
 Route::post('api/v1/tasks/to_category/{idCategory}', [TasksController::class, 'storeToCategory'])->name('api.tasks.to_category.store');
 Route::post('api/v1/tasks/to_project/{idProject}', [TasksController::class, 'storeToProject'])->name('api.tasks.to_project.store');

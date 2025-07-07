@@ -231,33 +231,33 @@ const store = createStore({
         console.error('Error deleting Project:', error);
       }
     },
-    async fetchTasks({ commit }) {
+    async fetchTasks({ commit }, idProject) {
       try {
-        const response = await axios.get(tasksApiString);
+        const response = await axios.get(tasksApiString + (idProject ? ('/' + idProject) : ''));
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching Tasks:', error);
       }
     },
-    async fetchNotCompltedTasks({ commit }) {
+    async fetchNotCompltedTasks({ commit }, idProject) {
       try {
-        const response = await axios.get(tasksApiString + 'not_complted');
+        const response = await axios.get(tasksApiString + 'not_complted' + (idProject ? ('/' + idProject) : ''));
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching Tasks:', error);
       }
     },
-    async fetchCompltedTasks({ commit }) {
+    async fetchCompltedTasks({ commit }, idProject) {
       try {
-        const response = await axios.get(tasksApiString + 'complted');
+        const response = await axios.get(tasksApiString + 'complted' + (idProject ? ('/' + idProject) : ''));
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching Tasks:', error);
       }
     },
-    async fetchDeletedTasks({ commit }) {
+    async fetchDeletedTasks({ commit }, idProject) {
       try {
-        const response = await axios.get(tasksApiString + 'deleted');
+        const response = await axios.get(tasksApiString + 'deleted' + (idProject ? ('/' + idProject) : ''));
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching deleted Tasks:', error);

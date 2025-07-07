@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { ThField } from '../../types/Table';
 import { Task } from '../../types/ModelsIndex';
@@ -71,7 +71,17 @@ export default {
   components: {
     SubtaksOfTaskModal,
   },
-  setup() {
+  props: {
+    modal: {
+      type: Boolean,
+      default: false,
+    },
+    idProject: {
+      type: Number,
+      default: 0,
+    },
+  },
+  setup(props, { emit }) {
     const store = useStore();
     const subtasksOfTaskModalIdTask = ref<number>(0);
     const subtasksOfTaskModalNameTask = ref<string>('');
@@ -112,8 +122,16 @@ export default {
     const tasks = ref<Task[]|undefined>(undefined);
     const filterCompleted = ref('fetchNotCompltedTasks');
 
+    watch(() => props.idProject, (newIdProject) => {
+      if(newIdProject === 0) return;
+
+      changeCompletedFilter();
+    }, { deep: true });
+
     const changeCompletedFilter = async () => {
-      await store.dispatch(filterCompleted.value);
+      if(props.modal && !props.idProject) return;
+
+      await store.dispatch(filterCompleted.value, props.idProject || 0);
       
       tasks.value = store.getters.getTasks;
     };

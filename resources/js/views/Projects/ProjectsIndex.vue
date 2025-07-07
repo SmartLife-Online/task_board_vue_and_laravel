@@ -1,5 +1,6 @@
 <template>
     <div>
+      <TaksOfProjectModal :title="'Tasks of &quot;' + tasksOfProjectModalNameProject + '&quot;'" :idProject="tasksOfProjectModalIdProject" @modalClosed="onModalClosed" />
       <h1>Projects</h1>
       <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
         <option value="fetchNotCompltedProjects">
@@ -32,6 +33,9 @@
           <td>{{ project.points }}</td>
           <td>
             <button v-if="!project.completed" @click="completeProject(project)" class="btn btn-primary" style="margin: 8px;">Complete</button>
+            <button id="modalButton" type="button" class="btn btn-primary" style="margin: 8px;" @click="tasksOfProjectModalIdProject = project.id;tasksOfProjectModalNameProject = project.title">
+              Tasks
+            </button>
             <router-link :to="'/projects/' + project.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
             <router-link :to="'/projects/' + project.id + '/add_project_to_project'" class="btn btn-primary" style="margin: 8px;">Add Sub-Project</router-link>
             <router-link :to="'/projects/' + project.id + '/add_task'" class="btn btn-primary" style="margin: 8px;">Add Task</router-link>
@@ -51,11 +55,17 @@
   import { useStore } from 'vuex';
   import { ThField } from '../../types/Table';
   import { Project } from '../../types/ModelsIndex';
+  import TaksOfProjectModal from '../../components/modals/TaksOfProjectModal.vue';
 
   export default {
     name: 'ProjectsIndex',
+    components: {
+      TaksOfProjectModal,
+    },
     setup() {
       const store = useStore();
+      const tasksOfProjectModalIdProject = ref<number>(0);
+      const tasksOfProjectModalNameProject = ref<string>('');
       const thFields = ref<ThField[]>([
         {
           key: 'life_area',
@@ -107,12 +117,20 @@
         await store.dispatch('completeProject', project);
       };
 
+      const onModalClosed = () => {
+        tasksOfProjectModalIdProject.value = 0;
+        tasksOfProjectModalNameProject.value = '';
+      };
+
       const deleteProject = async (project) => {
         await store.dispatch('deleteProject', project);
       };
 
       return {
         thFields,
+        tasksOfProjectModalIdProject,
+        tasksOfProjectModalNameProject,
+        onModalClosed,
         projects,
         filterCompleted,
         changeCompletedFilter,

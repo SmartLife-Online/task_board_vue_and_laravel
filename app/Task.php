@@ -29,19 +29,37 @@ class Task extends Model
         return $query->get();
     }
 
-    public static function allNotComplted()
+    public static function allNotComplted(?int $idProject = null)
     {
-        return self::where('active', 1)->where('completed', 0)->get();
+        $query = self::where('active', 1)->where('completed', 0);
+
+        if ($idProject) {
+            $query = $query->where('project_id', $idProject);
+        }
+        
+        return $query->get();
     }
 
-    public static function allComplted()
+    public static function allComplted(?int $idProject = null)
     {
-        return self::where('active', 1)->where('completed', 1)->get();
+        $query = self::where('active', 1)->where('completed', 1);
+
+        if ($idProject) {
+            $query = $query->where('project_id', $idProject);
+        }
+        
+        return $query->get();
     }
 
-    public static function allDeleted()
+    public static function allDeleted(?int $idProject = null)
     {
-        return self::where('active', 0)->get();
+        $query = self::where('active', 0);
+
+        if ($idProject) {
+            $query = $query->where('project_id', $idProject);
+        }
+        
+        return $query->get();
     }
 
     public function lifeArea()

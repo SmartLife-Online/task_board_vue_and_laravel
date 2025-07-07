@@ -1,6 +1,6 @@
 <template>
     <div>
-        User-Points: {{ user?.points }} | {{ user?.seasonPoints }}
+        User-Points: {{ user?.points }} | {{ user?.seasonPoints }} | {{ (user?.seasonPoints || 0) - 1193 }}
         <button @click="recalcUserPoints(user)" class="btn btn-primary">Recalc</button>
     </div>
 </template>
