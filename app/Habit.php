@@ -29,12 +29,12 @@ class Habit extends Model
         return $query->get();
     }
 
-    public static function allNotComplted()
+    public static function allNotCompleted()
     {
         return self::where('active', 1)->where('completed', 0)->orderBy('life_area_id')->orderBy('category_id')->get();
     }
 
-    public static function allComplted()
+    public static function allCompleted()
     {
         return self::where('active', 1)->where('completed', 1)->orderBy('life_area_id')->orderBy('category_id')->get();
     }

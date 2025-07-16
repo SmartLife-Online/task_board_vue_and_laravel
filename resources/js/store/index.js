@@ -9,6 +9,7 @@ const projectsApiString = apiString + 'projects/';
 const tasksApiString = apiString + 'tasks/';
 const subtasksApiString = apiString + 'subtasks/';
 const habitsApiString = apiString + 'habits/';
+const daySchedulesApiString = apiString + 'day_schedules/';
 const usersApiString = apiString + 'users/';
 
 const store = createStore({
@@ -25,6 +26,8 @@ const store = createStore({
     subtask: [],
     habits: [],
     habit: [],
+    daySchedule: [],
+    daySchedules: [],
     user: [],
   },
   mutations: {
@@ -64,6 +67,12 @@ const store = createStore({
     setHabit(state, habit) {
       state.habit = habit;
     },
+    setDaySchedules(state, daySchedules) {
+      state.daySchedules = daySchedules;
+    },
+    setDaySchedule(state, daySchedule) {
+      state.daySchedule = daySchedule;
+    },
     setUser(state, user) {
       state.user = user;
     },
@@ -98,7 +107,10 @@ const store = createStore({
       try {
         const response = await axios.delete(lifeAreaApiString + lifeArea.id);
         
-        lifeArea.active = false;
+        if(response.data.success) {
+          lifeArea.active = false;
+          lifeArea.removed = true;
+        }
       } catch (error) {
         console.error('Error deleting life-area:', error);
       }
@@ -141,7 +153,10 @@ const store = createStore({
       try {
         const response = await axios.delete(categoriesApiString + category.id);
         
-        category.active = false;
+        if(response.data.success) {
+          category.active = false;
+          category.removed = true;
+        }
       } catch (error) {
         console.error('Error deleting Category:', error);
       }
@@ -154,17 +169,17 @@ const store = createStore({
         console.error('Error fetching Projects:', error);
       }
     },
-    async fetchNotCompltedProjects({ commit }) {
+    async fetchNotCompletedProjects({ commit }) {
       try {
-        const response = await axios.get(projectsApiString + 'not_complted');
+        const response = await axios.get(projectsApiString + 'not_completed');
         commit('setProjects', response.data);
       } catch (error) {
         console.error('Error fetching Projects:', error);
       }
     },
-    async fetchCompltedProjects({ commit }) {
+    async fetchCompletedProjects({ commit }) {
       try {
-        const response = await axios.get(projectsApiString + 'complted');
+        const response = await axios.get(projectsApiString + 'completed');
         commit('setProjects', response.data);
       } catch (error) {
         console.error('Error fetching Projects:', error);
@@ -226,38 +241,53 @@ const store = createStore({
       try {
         const response = await axios.delete(projectsApiString + project.id);
         
-        project.active = false;
+        if(response.data.success) {
+          project.active = false;
+          project.removed = true;
+        }
       } catch (error) {
         console.error('Error deleting Project:', error);
       }
     },
-    async fetchTasks({ commit }, idProject) {
+    async fetchTasks({ commit }, {idProject, idDaySchedule}) {
       try {
-        const response = await axios.get(tasksApiString + (idProject ? ('/' + idProject) : ''));
+        const urlString = idDaySchedule ? (daySchedulesApiString + 'all/' + idDaySchedule) : (tasksApiString + 'all/' + (idProject ? ('/' + idProject) : ''));
+
+        const response = await axios.get(urlString);
+
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching Tasks:', error);
       }
     },
-    async fetchNotCompltedTasks({ commit }, idProject) {
+    async fetchNotCompletedTasks({ commit }, {idProject, idDaySchedule}) {
       try {
-        const response = await axios.get(tasksApiString + 'not_complted' + (idProject ? ('/' + idProject) : ''));
+        const urlString = idDaySchedule ? (daySchedulesApiString + 'not_completed/' + idDaySchedule) : (tasksApiString + 'not_completed' + (idProject ? ('/' + idProject) : ''));
+
+        const response = await axios.get(urlString);
+
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching Tasks:', error);
       }
     },
-    async fetchCompltedTasks({ commit }, idProject) {
+    async fetchCompletedTasks({ commit }, {idProject, idDaySchedule}) {
       try {
-        const response = await axios.get(tasksApiString + 'complted' + (idProject ? ('/' + idProject) : ''));
+        const urlString = idDaySchedule ? (daySchedulesApiString + 'completed/' + idDaySchedule) : (tasksApiString + 'completed' + (idProject ? ('/' + idProject) : ''));
+
+        const response = await axios.get(urlString);
+        
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching Tasks:', error);
       }
     },
-    async fetchDeletedTasks({ commit }, idProject) {
+    async fetchDeletedTasks({ commit }, {idProject, idDaySchedule}) {
       try {
-        const response = await axios.get(tasksApiString + 'deleted' + (idProject ? ('/' + idProject) : ''));
+        const urlString = idDaySchedule ? (daySchedulesApiString + 'deleted/' + idDaySchedule) : (tasksApiString + 'deleted' + (idProject ? ('/' + idProject) : ''));
+
+        const response = await axios.get(urlString);
+        
         commit('setTasks', response.data);
       } catch (error) {
         console.error('Error fetching deleted Tasks:', error);
@@ -320,7 +350,10 @@ const store = createStore({
       try {
         const response = await axios.delete(tasksApiString + task.id);
         
-        task.active = false;
+        if(response.data.success) {
+          task.active = false;
+          task.removed = true;
+        }
       } catch (error) {
         console.error('Error deleting Task:', error);
       }
@@ -333,20 +366,20 @@ const store = createStore({
         console.error('Error fetching Subtasks:', error);
       }
     },
-    async fetchNotCompltedSubtasks({ commit }, idTask) {
+    async fetchNotCompletedSubtasks({ commit }, idTask) {
       try {
-        const response = await axios.get(subtasksApiString + 'not_complted' + (idTask ? ('/' + idTask) : ''));
+        const response = await axios.get(subtasksApiString + 'not_completed' + (idTask ? ('/' + idTask) : ''));
         commit('setSubtasks', response.data);
       } catch (error) {
-        console.error('Error fetching not complted Subtasks:', error);
+        console.error('Error fetching not completed Subtasks:', error);
       }
     },
-    async fetchCompltedSubtasks({ commit }, idTask) {
+    async fetchCompletedSubtasks({ commit }, idTask) {
       try {
-        const response = await axios.get(subtasksApiString + 'complted' + (idTask ? ('/' + idTask) : ''));
+        const response = await axios.get(subtasksApiString + 'completed' + (idTask ? ('/' + idTask) : ''));
         commit('setSubtasks', response.data);
       } catch (error) {
-        console.error('Error fetching complted Subtasks:', error);
+        console.error('Error fetching completed Subtasks:', error);
       }
     },
     async fetchDeletedSubtasks({ commit }, idTask) {
@@ -396,7 +429,10 @@ const store = createStore({
       try {
         const response = await axios.delete(subtasksApiString + subtask.id);
         
-        subtask.active = false;
+        if(response.data.success) {
+          subtask.active = false;
+          subtask.removed = true;
+        }
       } catch (error) {
         console.error('Error deleting Subtask:', error);
       }
@@ -409,17 +445,17 @@ const store = createStore({
         console.error('Error fetching habits:', error);
       }
     },
-    async fetchNotCompltedHabits({ commit }) {
+    async fetchNotCompletedHabits({ commit }) {
       try {
-        const response = await axios.get(habitsApiString + 'not_complted');
+        const response = await axios.get(habitsApiString + 'not_completed');
         commit('setHabits', response.data);
       } catch (error) {
         console.error('Error fetching Habits:', error);
       }
     },
-    async fetchCompltedHabits({ commit }) {
+    async fetchCompletedHabits({ commit }) {
       try {
-        const response = await axios.get(habitsApiString + 'complted');
+        const response = await axios.get(habitsApiString + 'completed');
         commit('setHabits', response.data);
       } catch (error) {
         console.error('Error fetching Habits:', error);
@@ -501,9 +537,131 @@ const store = createStore({
       try {
         const response = await axios.delete(habitsApiString + habit.id);
         
-        habit.active = false;
+        if(response.data.success) {
+          habit.active = false;
+          habit.removed = true;
+        }
       } catch (error) {
         console.error('Error deleting Habit:', error);
+      }
+    },
+    async fetchDaySchedule({ commit }, idDaySchedule) {
+      try {
+        const response = await axios.get(daySchedulesApiString + idDaySchedule);
+        commit('setDaySchedule', response.data);
+      } catch (error) {
+        console.error('Error fetching Day-Schedule:', error);
+      }
+    },
+    async fetchInProgressDaySchedules({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_in_progress');
+        
+        commit('setDaySchedules', response.data);
+      } catch (error) {
+        console.error('Error fetching "In progress" Day-Schedules:', error);
+      }
+    },
+    async fetchPendingDaySchedules({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_pending');
+        
+        commit('setDaySchedules', response.data);
+      } catch (error) {
+        console.error('Error fetching "Pending" Day-Schedules:', error);
+      }
+    },
+    async fetchSuccessfulDaySchedules({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_successful');
+        
+        commit('setDaySchedules', response.data);
+      } catch (error) {
+        console.error('Error fetching "Successful" Day-Schedules:', error);
+      }
+    },
+    async fetchFailedDaySchedules({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_failed');
+        
+        commit('setDaySchedules', response.data);
+      } catch (error) {
+        console.error('Error fetching "Failed" Day-Schedules:', error);
+      }
+    },
+    async fetchDaySchedules({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_all');
+        
+        commit('setDaySchedules', response.data);
+      } catch (error) {
+        console.error('Error fetching all Day-Schedules:', error);
+      }
+    },
+    async fetchDeletedDaySchedules({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_deleted');
+        
+        commit('setDaySchedules', response.data);
+      } catch (error) {
+        console.error('Error fetching "Deleted" Day-Schedules:', error);
+      }
+    },
+    async activateDaySchedule({ commit }, daySchedule) {
+      try {
+        const response = await axios.get(daySchedulesApiString + daySchedule.id + '/activate');
+        
+        daySchedule.status_id = response.data.status_id;
+      } catch (error) {
+        console.error('Error fetching "Deleted" Day-Schedules:', error);
+      }
+    },
+    async completeDaySchedule({ commit }, daySchedule) {
+      try {
+        const response = await axios.get(daySchedulesApiString + daySchedule.id + '/complete');
+        
+        daySchedule.status_id = response.data.status_id;
+      } catch (error) {
+        console.error('Error fetching "Deleted" Day-Schedules:', error);
+      }
+    },
+    async completeDayScheduleById({ commit }, idDaySchedule) {
+      try {
+        const response = await axios.get(daySchedulesApiString + idDaySchedule + '/complete');
+        
+        router.push({ name: 'DaySchedulesIndex' });
+      } catch (error) {
+        console.error('Error fetching "Deleted" Day-Schedules:', error);
+      }
+    },
+    async submitStoreDaySchedule({ commit }, {formData}) {
+      try {
+        const response = await axios.post(daySchedulesApiString, formData);
+        commit('setDaySchedule', response.data);
+        router.push({ name: 'DaySchedulesIndex' });
+      } catch (error) {
+        console.error('Error submitting Day-Schedule form data:', error);
+      }
+    },
+    async submitEditDaySchedule({ commit }, {idDaySchedule, formData}) {
+      try {
+        const response = await axios.put(daySchedulesApiString + idDaySchedule, formData);
+        commit('setDaySchedule', response.data);
+        router.push({ name: 'DaySchedulesIndex' });
+      } catch (error) {
+        console.error('Error submitting Day-Schedule form data:', error);
+      }
+    },
+    async deleteDaySchedule({ commit }, daySchedule) {
+      try {
+        const response = await axios.delete(daySchedulesApiString + daySchedule.id + '/delete');
+        
+        if(response.data.success) {
+          daySchedule.active = false;
+          daySchedule.removed = true;
+        }
+      } catch (error) {
+        console.error('Error fetching "Deleted" Day-Schedules:', error);
       }
     },
     async fetchUser({ commit }, idUser) {
@@ -537,6 +695,8 @@ const store = createStore({
     getSubtask: state => state.subtask,
     getHabits: state => state.habits,
     getHabit: state => state.habit,
+    getDaySchedules: state => state.daySchedules,
+    getDaySchedule: state => state.daySchedule,
     getUser: state => state.user,
   }
 });

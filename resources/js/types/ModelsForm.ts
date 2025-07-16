@@ -20,6 +20,7 @@ export interface Task {
     title: string;
     description: string;
     points_upon_completion: string;
+    day_schedule_part_id: number | null;
 }
 
 export interface Subtask {
@@ -32,4 +33,11 @@ export interface Habit {
     title: string;
     description: string;
     points_per_completion: string;
+}
+
+export interface DaySchedule {
+    day: number;
+    title: string;
+    description: string;
+    points_upon_success: number;
 }

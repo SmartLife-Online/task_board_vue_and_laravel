@@ -4,11 +4,11 @@
       <div v-if="categories === undefined" class="alert alert-info">
         Loading categories...
       </div>
-      <table v-else-if="categories.length !== 0" class="table table-bordered table-striped">
+      <table v-else-if="filteredCategories.length !== 0" class="table table-bordered table-striped">
         <th v-for="thField in thFields" :key="thField.key">
           {{ thField.label }}
         </th>
-        <tr v-for="category in categories" :key="category.id"> 
+        <tr v-for="category in filteredCategories" :key="category.id"> 
           <td>{{ category.life_area }}</td>
           <td>{{ category.title }}</td>
           <td>{{ category.description }}</td>
@@ -37,6 +37,11 @@
 
   export default {
     name: 'CategoriesIndex',
+    computed: {
+      filteredCategories() {
+        return this.categories.filter(category => !category.removed);
+      },
+    },
     setup() {
       const store = useStore();
       const thFields = ref<ThField[]>([

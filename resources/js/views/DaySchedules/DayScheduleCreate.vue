@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>Add Subtask to Task {{ idTask }}</h1>
-    <TaskBoardFormular :rows="formRows" :entry="subtask" @submitForm="handleFormSubmit" />
+    <h1>Add Day-Schedual</h1>
+    <TaskBoardFormular :rows="formRows" :entry="daySchedule" @submitForm="handleFormSubmit" />
   </div>
 </template>
 
@@ -9,12 +9,12 @@
 import { ref } from 'vue';
 import TaskBoardFormular from '../../components/TaskBoardFormular.vue';
 import { FormField } from '../../types/Form';
-import { Subtask } from '../../types/ModelsForm';
+import { DaySchedule } from '../../types/ModelsForm';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
 export default {
-  name: 'SubtasksCreate',
+  name: 'DayScheduleCreate',
   components: {
     TaskBoardFormular
   },
@@ -24,29 +24,29 @@ export default {
 
     const formRows = ref<FormField[][]>([
       [
-        { name: 'title', type: 'text', label: 'Title' },
-        { name: 'description', type: 'text', label: 'Description' },
+        { name: 'day', type: 'text', label: 'Day' },
+        { name: 'points_upon_success', type: 'text', label: 'Points upon success' },
       ],
       [
-        { name: 'points_upon_completion', type: 'text', label: 'Points upon completion' },
+        { name: 'title', type: 'text', label: 'Title' },
+        { name: 'description', type: 'text', label: 'Description' },
       ]
     ]);
 
-    const idTask = parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
-    const subtask = ref<Subtask>({
+    const daySchedule = ref<DaySchedule>({
+      day: 0,
       title: '',
       description: '',
-      points_upon_completion: ''
+      points_upon_success: 0
     });
     
     const handleFormSubmit = async formData => {
-      const data = await store.dispatch('submitStoreSubtask', {idTask, formData});
+      const data = await store.dispatch('submitEditDaySchedule', {formData});
     };
 
     return {
       formRows,
-      idTask,
-      subtask,
+      daySchedule,
       handleFormSubmit
     };
   },

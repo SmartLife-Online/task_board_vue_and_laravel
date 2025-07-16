@@ -2,10 +2,10 @@
   <div>
     <h1>Subtasks</h1>
     <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
-      <option value="fetchNotCompltedSubtasks">
+      <option value="fetchNotCompletedSubtasks">
         Not completed
       </option>
-      <option value="fetchCompltedSubtasks">
+      <option value="fetchCompletedSubtasks">
         Completed
       </option>
       <option value="fetchSubtasks">
@@ -18,11 +18,11 @@
     <div v-if="subtasks === undefined" class="alert alert-info">
       Loading subtasks...
     </div>
-    <table v-else-if="subtasks && subtasks.length !== 0" class="table table-bordered table-striped">
+    <table v-else-if="subtasks && filteredSubtasks.length !== 0" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
-      <tr v-for="subtask in subtasks" :key="subtask.id">
+      <tr v-for="subtask in filteredSubtasks" :key="subtask.id">
         <td>{{ subtask.task }}</td>
         <td>{{ subtask.title }}</td>
         <td>{{ subtask.points_upon_completion }}</td>
@@ -68,6 +68,11 @@ export default {
       default: 0,
     },
   },
+  computed: {
+    filteredSubtasks() {
+      return this.subtasks.filter(subtask => !subtask.removed);
+    },
+  },
   setup(props, { emit }) {
     const store = useStore();
     const thFields = ref<ThField[]>([
@@ -97,7 +102,7 @@ export default {
       }
     ]);
     const subtasks = ref<Subtask[]|undefined>(undefined);
-    const filterCompleted = ref('fetchNotCompltedSubtasks');
+    const filterCompleted = ref('fetchNotCompletedSubtasks');
 
     onMounted(async () => {
       await changeCompletedFilter();

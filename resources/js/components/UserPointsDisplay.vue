@@ -1,7 +1,11 @@
 <template>
     <div>
         User-Points: {{ user?.points }} | {{ user?.seasonPoints }} | {{ (user?.seasonPoints || 0) - 1193 }}
-        <button @click="recalcUserPoints(user)" class="btn btn-primary">Recalc</button>
+        <button @click="recalcUserPoints(user)" class="btn btn-primary" style="margin-right: 12px;">Recalc</button>
+        <a v-if="user?.day" :href="'/day_schedules/' + user.day_id + '/tasks'" class="btn btn-primary" style="margin-right: 12px;">Show Day {{ user.day }}</a>
+        <button v-if="user?.day" @click="completeDayScheduleById(user.day_id)" class="btn btn-primary">
+        Complete
+        </button>
     </div>
 </template>
     
@@ -27,9 +31,14 @@ export default {
             await store.dispatch('recalcUserPoints', user);
         };
 
+        const completeDayScheduleById = async (idDaySchedule) => {
+            await store.dispatch('completeDayScheduleById', idDaySchedule);
+        };
+
         return {
             user,
-            recalcUserPoints
+            recalcUserPoints,
+            completeDayScheduleById
         };
     },
 

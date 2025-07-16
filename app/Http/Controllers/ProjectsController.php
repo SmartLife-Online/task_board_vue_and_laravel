@@ -16,14 +16,14 @@ class ProjectsController extends Controller
         return self::indexJSON(Project::allSortedBylifeAreaAndCategory());
     }
 
-    public function indexNotComplted(): JsonResponse
+    public function indexNotCompleted(): JsonResponse
     {
-        return self::indexJSON(Project::allNotComplted());
+        return self::indexJSON(Project::allNotCompleted());
     }
 
-    public function indexComplted(): JsonResponse
+    public function indexCompleted(): JsonResponse
     {
-        return self::indexJSON(Project::allComplted());
+        return self::indexJSON(Project::allCompleted());
     }
 
     public function indexDeleted(): JsonResponse

@@ -15,14 +15,14 @@ class SubtasksController extends Controller
         return self::indexJSON(Subtask::allActive($idTask));
     }
 
-    public function indexNotComplted(?int $idTask = null): JsonResponse
+    public function indexNotCompleted(?int $idTask = null): JsonResponse
     {
-        return self::indexJSON(Subtask::allNotComplted($idTask));
+        return self::indexJSON(Subtask::allNotCompleted($idTask));
     }
 
-    public function indexComplted(?int $idTask = null): JsonResponse
+    public function indexCompleted(?int $idTask = null): JsonResponse
     {
-        return self::indexJSON(Subtask::allComplted($idTask));
+        return self::indexJSON(Subtask::allCompleted($idTask));
     }
 
     public function indexDeleted(?int $idTask = null): JsonResponse
@@ -83,6 +83,7 @@ class SubtasksController extends Controller
         $subtask->title = $request->title;
         $subtask->description = $request->description;
         $subtask->points_upon_completion = $request->points_upon_completion;
+        $subtask->day_schedule_part_id = $task->day_schedule_part_id;
 
         $subtask->save();
 

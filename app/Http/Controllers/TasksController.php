@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use App\Task;
 use App\Project;
 use App\Category;
+use App\DaySchedule;
 
 class TasksController extends Controller
 {
@@ -17,19 +18,63 @@ class TasksController extends Controller
         return self::indexJSON(Task::allActive($idProject));
     }
 
-    public function indexNotComplted(?int $idProject = null): JsonResponse
+    public function indexNotCompleted(?int $idProject = null): JsonResponse
     {
-        return self::indexJSON(Task::allNotComplted($idProject));
+        return self::indexJSON(Task::allNotCompleted($idProject));
     }
 
-    public function indexComplted(?int $idProject = null): JsonResponse
+    public function indexCompleted(?int $idProject = null): JsonResponse
     {
-        return self::indexJSON(Task::allComplted($idProject));
+        return self::indexJSON(Task::allCompleted($idProject));
     }
 
     public function indexDeleted(?int $idProject = null): JsonResponse
     {
         return self::indexJSON(Task::allDeleted($idProject));
+    }
+
+    // Day-Schedule
+
+    public function indexFromDaySchedule(?int $idDaySchedule): JsonResponse
+    {
+        return self::indexJSON(Task::allActivFromDaySchedule($idDaySchedule));
+    }
+
+    public function indexNotCompletedFromDaySchedule(?int $idDaySchedule): JsonResponse
+    {
+        return self::indexJSON(Task::allNotCompletedFromDaySchedule($idDaySchedule));
+    }
+
+    public function indexCompletedFromDaySchedule(?int $idDaySchedule): JsonResponse
+    {
+        return self::indexJSON(Task::allCompletedFromDaySchedule($idDaySchedule));
+    }
+
+    public function indexDeletedFromDaySchedule(?int $idDaySchedule): JsonResponse
+    {
+        return self::indexJSON(Task::allDeletedFromDaySchedule($idDaySchedule));
+    }
+
+    // Day-Schedule-Part
+
+    public function indexFromDaySchedulePart(?int $idDaySchedulePart): JsonResponse
+    {
+        return self::indexJSON(Task::allActiveFromDaySchedulePart($idDaySchedulePart));
+    }
+
+    public function indexNotCompletedFromDaySchedulePart(?int $idDaySchedulePart): JsonResponse
+    {
+        return self::indexJSON(Task::allNotCompletedFromDaySchedulePart($idDaySchedulePart));
+    }
+
+    public function indexCompletedFromDaySchedulePart(?int $idDaySchedulePart): JsonResponse
+    {
+        return self::indexJSON(Task::allCompletedFromDaySchedulePart($idDaySchedulePart));
+    }
+
+    public function indexDeletedFromDaySchedulePart(?int $idDaySchedulePart): JsonResponse
+    {
+        return self::indexJSON(Task::allDeletedFromDaySchedulePart($idDaySchedulePart));
     }
 
     public function indexJSON(Collection $tasks): JsonResponse
@@ -79,6 +124,7 @@ class TasksController extends Controller
         $task->title = $request->title;
         $task->description = $request->description;
         $task->points_upon_completion = $request->points_upon_completion;
+        $task->day_schedule_part_id = $request->day_schedule_part_id ?? null;
 
         $task->save();
 
@@ -100,6 +146,7 @@ class TasksController extends Controller
         $task->title = $request->title;
         $task->description = $request->description;
         $task->points_upon_completion = $request->points_upon_completion;
+        $task->day_schedule_part_id = $request->day_schedule_part_id ?? null;
 
         $task->save();
 
@@ -116,8 +163,17 @@ class TasksController extends Controller
         $task->title = $request->title;
         $task->description = $request->description;
         $task->points_upon_completion = $request->points_upon_completion;
+        $task->day_schedule_part_id = $request->day_schedule_part_id ?: null;
 
         $task->update();
+
+        if($task->wasChanged('day_schedule_part_id')) {  
+            foreach ($task->subtasks as $subtask) {
+                $subtask->day_schedule_part_id = $task->day_schedule_part_id;
+
+                $subtask->update();
+            }
+        }
 
         return response()->json($task);
     }

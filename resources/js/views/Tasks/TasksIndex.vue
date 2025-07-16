@@ -3,10 +3,10 @@
     <SubtaksOfTaskModal :title="'Subtasks of &quot;' + subtasksOfTaskModalNameTask + '&quot;'" :idTask="subtasksOfTaskModalIdTask" @modalClosed="onModalClosed" />
     <h1>Tasks</h1>
     <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
-      <option value="fetchNotCompltedTasks">
+      <option value="fetchNotCompletedTasks">
         Not completed
       </option>
-      <option value="fetchCompltedTasks">
+      <option value="fetchCompletedTasks">
         Completed
       </option>
       <option value="fetchTasks">
@@ -19,11 +19,11 @@
     <div v-if="tasks === undefined" class="alert alert-info">
       Loading tasks...
     </div>
-    <table v-else-if="tasks.length !== 0" class="table table-bordered table-striped">
+    <table v-else-if="filteredTasks.length !== 0" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
-      <tr v-for="task in tasks" :key="task.id">
+      <tr v-for="task in filteredTasks" :key="task.id">
         <td>{{ task.category }}</td>
         <td>{{ task.project }}</td>
         <td>{{ task.title }}</td>
@@ -80,8 +80,17 @@ export default {
       type: Number,
       default: 0,
     },
+    idDaySchedule: {
+      type: Number,
+      default: 0,
+    },
   },
-  setup(props, { emit }) {
+  computed: {
+    filteredTasks() {
+      return this.tasks.filter(task => !task.removed);
+    },
+  },
+  setup(props) {
     const store = useStore();
     const subtasksOfTaskModalIdTask = ref<number>(0);
     const subtasksOfTaskModalNameTask = ref<string>('');
@@ -120,7 +129,7 @@ export default {
       }
     ]);
     const tasks = ref<Task[]|undefined>(undefined);
-    const filterCompleted = ref('fetchNotCompltedTasks');
+    const filterCompleted = ref('fetchNotCompletedTasks');
 
     watch(() => props.idProject, (newIdProject) => {
       if(newIdProject === 0) return;
@@ -130,8 +139,11 @@ export default {
 
     const changeCompletedFilter = async () => {
       if(props.modal && !props.idProject) return;
+      
+      const idProject = props.idProject || 0;
+      const idDaySchedule = props.idDaySchedule || 0;
 
-      await store.dispatch(filterCompleted.value, props.idProject || 0);
+      await store.dispatch(filterCompleted.value, {idProject, idDaySchedule});
       
       tasks.value = store.getters.getTasks;
     };

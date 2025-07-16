@@ -85,10 +85,22 @@ export interface Habit {
     active: boolean;
 }
 
+export interface DaySchedules {
+    id: number;
+    day: number;
+    title: string;
+    description: string;
+    points_upon_success: number;
+    status_id: number;
+    active: boolean;
+}
+
 export interface User {
     id: number;
     points: number;
     seasonBasisPoints: number;
     seasonPoints: number;
+    day: number;
+    day_id: number;
     active: boolean;
 }

@@ -3,10 +3,10 @@
       <TaksOfProjectModal :title="'Tasks of &quot;' + tasksOfProjectModalNameProject + '&quot;'" :idProject="tasksOfProjectModalIdProject" @modalClosed="onModalClosed" />
       <h1>Projects</h1>
       <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
-        <option value="fetchNotCompltedProjects">
+        <option value="fetchNotCompletedProjects">
           Not completed
         </option>
-        <option value="fetchCompltedProjects">
+        <option value="fetchCompletedProjects">
           Completed
         </option>
         <option value="fetchProjects">
@@ -19,11 +19,11 @@
       <div v-if="projects === undefined" class="alert alert-info">
         Loading projects...
       </div>
-      <table v-else-if="projects.length !== 0" class="table table-bordered table-striped">
+      <table v-else-if="filteredProjects.length !== 0" class="table table-bordered table-striped">
         <th v-for="thField in thFields" :key="thField.key">
           {{ thField.label }}
         </th>
-        <tr v-for="project in projects" :key="project.id"> 
+        <tr v-for="project in filteredProjects" :key="project.id"> 
           <td>{{ project.life_area }}</td>
           <td>{{ project.category }}</td>
           <td>{{ project.title }}</td>
@@ -61,6 +61,11 @@
     name: 'ProjectsIndex',
     components: {
       TaksOfProjectModal,
+    },
+    computed: {
+      filteredProjects() {
+        return this.projects.filter(project => !project.removed);
+      },
     },
     setup() {
       const store = useStore();
@@ -101,7 +106,7 @@
         }
       ]);
       const projects = ref<Project[]|undefined>(undefined);
-      const filterCompleted = ref('fetchNotCompltedProjects');
+      const filterCompleted = ref('fetchNotCompletedProjects');
 
       onMounted(async () => {
         await changeCompletedFilter();

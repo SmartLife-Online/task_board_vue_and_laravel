@@ -29,6 +29,7 @@ export default {
       ],
       [
         { name: 'points_upon_completion', type: 'text', label: 'Points upon completion' },
+        { name: 'day_schedule_part_id', type: 'text', label: 'Day-Schedule-Part' },
       ]
     ]);
 
@@ -36,7 +37,8 @@ export default {
     const task = ref<Task>({
       title: '',
       description: '',
-      points_upon_completion: ''
+      points_upon_completion: '',
+      day_schedule_part_id: null
     });
     
     const handleFormSubmit = async formData => {

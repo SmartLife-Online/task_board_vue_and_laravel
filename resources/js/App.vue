@@ -3,6 +3,7 @@
         <h1>Task-Board</h1>
         <UserPointsDisplay />
         <div class="navbar">
+            <router-link to="/day_schedules">Day-Schedule</router-link>
             <router-link to="/life_areas">Life-Areas</router-link>
             <router-link to="/categories">Categories</router-link>
             <router-link to="/projects">Projects</router-link>

@@ -10,6 +10,7 @@ import ProjectsCreateToCategory from '../views/Projects/ProjectsCreateToCategory
 import ProjectsCreateToProject from '../views/Projects/ProjectsCreateToProject.vue';
 import ProjectsEdit from '../views/Projects/ProjectsEdit.vue';
 import TasksIndex from '../views/Tasks/TasksIndex.vue';
+import TasksOfDayScheduleIndex from '../views/DaySchedules/TasksOfDayScheduleIndex.vue';
 import TasksCreateToCategory from '../views/Tasks/TasksCreateToCategory.vue';
 import TasksCreateToProject from '../views/Tasks/TasksCreateToProject.vue';
 import TasksEdit from '../views/Tasks/TasksEdit.vue';
@@ -20,6 +21,9 @@ import HabitsIndex from '../views/Habits/HabitsIndex.vue';
 import HabitsCreateToCategory from '../views/Habits/HabitsCreateToCategory.vue';
 import HabitsCreateToProject from '../views/Habits/HabitsCreateToProject.vue';
 import HabitsEdit from '../views/Habits/HabitsEdit.vue';
+import DaySchedulesIndex from '../views/DaySchedules/DaySchedulesIndex.vue';
+import DayScheduleCreate from '../views/DaySchedules/DayScheduleCreate.vue';
+import DayScheduleEdit from '../views/DaySchedules/DayScheduleEdit.vue';
 
 const routes = [
   {
@@ -91,6 +95,26 @@ const routes = [
     path: '/projects/:id/add_habit',
     name: 'HabitsCreateToProject',
     component: HabitsCreateToProject
+  },
+  {
+    path: '/day_schedules',
+    name: 'DaySchedulesIndex',
+    component: DaySchedulesIndex
+  },
+  {
+    path: '/day_schedules/create',
+    name: 'DayScheduleCreate',
+    component: DayScheduleCreate
+  },
+  {
+    path: '/day_schedules/:id',
+    name: 'DayScheduleEdit',
+    component: DayScheduleEdit
+  },
+  {
+    path: '/day_schedules/:idDaySchedule/tasks',
+    name: 'TasksOfDayScheduleIndex',
+    component: TasksOfDayScheduleIndex
   },
   {
     path: '/tasks',

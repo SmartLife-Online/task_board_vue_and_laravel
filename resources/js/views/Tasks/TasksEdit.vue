@@ -29,6 +29,7 @@
       ],
         [
           { name: 'points_upon_completion', type: 'text', label: 'Points upon completion' },
+          { name: 'day_schedule_part_id', type: 'text', label: 'Day-Schedule-Part' },
         ]
       ]);
       const idTask = parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);

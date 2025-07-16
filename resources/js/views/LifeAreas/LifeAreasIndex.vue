@@ -4,11 +4,11 @@
       <div v-if="lifeAreas === undefined" class="alert alert-info">
         Loading life-areas...
       </div>
-      <table v-else-if="lifeAreas.length !== 0" class="table table-bordered table-striped">
+      <table v-else-if="filteredLifeAreas.length !== 0" class="table table-bordered table-striped">
         <th v-for="thField in thFields" :key="thField.key">
           {{ thField.label }}
         </th>
-        <tr v-for="lifeArea in lifeAreas" :key="lifeArea.id"> 
+        <tr v-for="lifeArea in filteredLifeAreas" :key="lifeArea.id"> 
           <td>{{ lifeArea.title }}</td>
           <td>{{ lifeArea.description }}</td>
           <td>{{ lifeArea.points_multiplier_in_percent }}</td>
@@ -34,6 +34,11 @@
 
   export default {
     name: 'LifeAreasIndex',
+    computed: {
+      filteredLifeAreas() {
+        return this.lifeAreas.filter(lifeArea => !lifeArea.removed);
+      },
+    },
     setup() {
       const store = useStore();
       const thFields = ref<ThField[]>([

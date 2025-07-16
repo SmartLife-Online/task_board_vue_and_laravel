@@ -29,7 +29,7 @@ class Task extends Model
         return $query->get();
     }
 
-    public static function allNotComplted(?int $idProject = null)
+    public static function allNotCompleted(?int $idProject = null)
     {
         $query = self::where('active', 1)->where('completed', 0);
 
@@ -40,7 +40,7 @@ class Task extends Model
         return $query->get();
     }
 
-    public static function allComplted(?int $idProject = null)
+    public static function allCompleted(?int $idProject = null)
     {
         $query = self::where('active', 1)->where('completed', 1);
 
@@ -62,6 +62,80 @@ class Task extends Model
         return $query->get();
     }
 
+    public static function allSortedBylifeAreaAndCategoryAndProject() {
+        return self::where('active', 1)
+            ->orderBy('life_area_id')
+            ->orderBy('category_id')
+            ->orderBy('project_id')
+            ->get();
+    }
+
+    // ~~ Day-Schedule ~~
+
+    public static function allActivFromDaySchedule(?int $idDaySchedule)
+    {
+        return self::where('active', 1)
+            ->whereIn('day_schedule_part_id', DaySchedule::getIdsdayScheduleParts($idDaySchedule))
+            ->get();
+    }
+
+    public static function allNotCompletedFromDaySchedule(?int $idDaySchedule)
+    {
+        return self::where('active', 1)
+            ->where('completed', 0)
+            ->whereIn('day_schedule_part_id', DaySchedule::getIdsdayScheduleParts($idDaySchedule))
+            ->get();
+    }
+
+
+    public static function allCompletedFromDaySchedule(?int $idDaySchedule)
+    {
+        return self::where('active', 1)
+            ->where('completed', 1)
+            ->whereIn('day_schedule_part_id', DaySchedule::getIdsdayScheduleParts($idDaySchedule))
+            ->get();
+    }
+
+
+    public static function allDeletedFromDaySchedule(?int $idDaySchedule)
+    {
+        return self::where('active', 0)
+            ->whereIn('day_schedule_part_id', DaySchedule::getIdsdayScheduleParts($idDaySchedule))
+            ->get();
+    }
+
+    // ~~ Day-Schedule-Part ~~
+
+    public static function allActiveFromDaySchedulePart(?int $idDaySchedulePart)
+    {
+        return self::where('active', 1)
+            ->where('day_schedule_part_id', $idDaySchedulePart)
+            ->get();
+    }
+
+    public static function allNotCompletedFromDaySchedulePart(?int $idDaySchedule)
+    {
+        return self::where('active', 1)
+            ->where('completed', 0)
+            ->where('day_schedule_part_id', $idDaySchedulePart)
+            ->get();
+    }
+
+    public static function allCompletedFromDaySchedulePart(?int $idDaySchedulePart)
+    {
+        return self::where('active', 1)
+            ->where('completed', 1)
+            ->where('day_schedule_part_id', $idDaySchedulePart)
+            ->get();
+    }
+
+    public static function allDeletedFromDaySchedulePart(?int $idDaySchedulePart)
+    {
+        return self::where('active', 0)
+            ->where('day_schedule_part_id', $idDaySchedulePart)
+            ->get();
+    }
+
     public function lifeArea()
     {
         return $this->belongsTo(LifeArea::class)->where('active', 1);
@@ -80,10 +154,6 @@ class Task extends Model
     public function subtasks()
     {
         return $this->hasMany(Subtask::class)->where('active', 1);
-    }
-
-    public static function allSortedBylifeAreaAndCategoryAndProject() {
-        return self::where('active', 1)->orderBy('life_area_id')->orderBy('category_id')->orderBy('project_id')->get();
     }
     
     public function recalcPoints() {

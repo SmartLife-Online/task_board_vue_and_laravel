@@ -1,0 +1,6 @@
+<?php
+
+const DS_STATUS_PENDING = 0;
+const DS_STATUS_IN_PROGRESS = 10;
+const DS_STATUS_SUCCESSFUL = 100;
+const DS_STATUS_FAILED = 200;

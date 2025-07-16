@@ -29,7 +29,7 @@ class Subtask extends Model
         return $query->get();
     }
 
-    public static function allNotComplted(?int $idTask = null)
+    public static function allNotCompleted(?int $idTask = null)
     {
         $query = self::where('active', 1)->where('completed', 0);
 
@@ -40,7 +40,7 @@ class Subtask extends Model
         return $query->get();
     }
 
-    public static function allComplted(?int $idTask = null)
+    public static function allCompleted(?int $idTask = null)
     {
         $query = self::where('active', 1)->where('completed', 1);
 

@@ -17,14 +17,14 @@ class HabitController extends Controller
         return self::indexJSON(Habit::allSortedBylifeAreaAndCategory());
     }
 
-    public function indexNotComplted(): JsonResponse
+    public function indexNotCompleted(): JsonResponse
     {
-        return self::indexJSON(Habit::allNotComplted());
+        return self::indexJSON(Habit::allNotCompleted());
     }
 
-    public function indexComplted(): JsonResponse
+    public function indexCompleted(): JsonResponse
     {
-        return self::indexJSON(Habit::allComplted());
+        return self::indexJSON(Habit::allCompleted());
     }
 
     public function indexDeleted(): JsonResponse

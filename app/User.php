@@ -27,6 +27,16 @@ class User extends Model
     {
         return $this->hasOne(UserSeason::class, 'user_id', 'id')->where('season_id', env('SEASON_ID', 0));
     }
+    
+    public function daySchedules()
+    {
+        return $this->hasMany(DaySchedule::class, 'user_id', 'id');
+    }
+    
+    public function daySchedulesSuccessful()
+    {
+        return $this->hasMany(DaySchedule::class, 'user_id', 'id')->where('status_id', DS_STATUS_SUCCESSFUL);
+    }
 
     public function setSeasonPoints()
     {
@@ -46,6 +56,7 @@ class User extends Model
 
     public function recalcPoints() {
         $this->basis_points = 0;
+        $this->day_schedule_basis_points = 0;
 
         foreach ($this->lifeAreas as $lifeArea) {
             $lifeArea->recalcPoints();
@@ -53,7 +64,11 @@ class User extends Model
             $this->basis_points += $lifeArea->points;
         }
 
-        $this->points = $this->basis_points * $this->points_multiplier_in_percent / 100;
+        foreach ($this->daySchedulesSuccessful as $daySchedules) {
+            $this->day_schedule_basis_points += $daySchedules->points_upon_success;
+        }
+
+        $this->points = ($this->basis_points + $this->day_schedule_basis_points) * $this->points_multiplier_in_percent / 100;
 
         $this->update();
     }

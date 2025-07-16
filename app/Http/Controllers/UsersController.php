@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use App\User;
+use App\DaySchedule;
 
 class UsersController extends Controller
 {
@@ -14,12 +15,17 @@ class UsersController extends Controller
     {
         $user = User::find($idUser);
 
+        $daySchedule = DaySchedule::where('user_id', $idUser)->where('status_id', DS_STATUS_IN_PROGRESS)->first();
+
+        $user->day = $daySchedule->day ?? null;
+        $user->day_id = $daySchedule->id ?? null;
+
         $user->setSeasonPoints();
 
         return response()->json($user);
     }
 
-    public function recalcUserPoints($idUser): JsonResponse{
+    public static function recalcUserPoints($idUser): JsonResponse{
         $user = User::find($idUser);
         
         $user->recalcPoints();
@@ -28,17 +34,17 @@ class UsersController extends Controller
     }
 
     public function recalcPoints() {
-        $users = User::all();
+        $users = User::with('lifeAreas.categories.projects.tasks.subtasks', 'lifeAreas.categories.projects.habits', 'daySchedulesSuccessful')->get();
 
         $totalPoints = 0;
-        $timeStart = time();
+        $timeStart = microtime(true);
         
         foreach ($users as $user) {
             $user->recalcPoints();
 
             $totalPoints += $user->points;
         }
-        $timeEnd = time();
+        $timeEnd = microtime(true);
         
         return 'Points recalculated: ' . $totalPoints . ' <br>In ' . ($timeEnd - $timeStart) . ' seconds';
     }

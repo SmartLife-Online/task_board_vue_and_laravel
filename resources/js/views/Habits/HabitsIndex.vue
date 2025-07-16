@@ -2,10 +2,10 @@
   <div>
     <h1>Habits</h1>
     <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
-      <option value="fetchNotCompltedHabits">
+      <option value="fetchNotCompletedHabits">
         Not completed
       </option>
-      <option value="fetchCompltedHabits">
+      <option value="fetchCompletedHabits">
         Completed
       </option>
       <option value="fetchHabits">
@@ -18,11 +18,11 @@
     <div v-if="habits === undefined" class="alert alert-info">
       Loading habits...
     </div>
-    <table v-else-if="habits.length !== 0" class="table table-bordered table-striped">
+    <table v-else-if="filtereHabits.length !== 0" class="table table-bordered table-striped">
       <th v-for="thField in thFields" :key="thField.key">
         {{ thField.label }}
       </th>
-      <tr v-for="habit in habits" :key="habit.id">
+      <tr v-for="habit in filtereHabits" :key="habit.id">
         <td @click="countUpCompletedInHabit(habit)" style="cursor: cell;">{{ habit.title }}</td>
         <td>{{ habit.category }}</td>
         <td>{{ habit.points_per_completion }}</td>
@@ -59,6 +59,11 @@ import { Habit } from '../../types/ModelsIndex';
 
 export default {
   name: 'HabitsIndex',
+  computed: {
+    filtereHabits() {
+      return this.habits.filter(habit => !habit.removed);
+    },
+  },
   setup() {
     const store = useStore();
     const thFields = ref<ThField[]>([
@@ -96,7 +101,7 @@ export default {
       }
     ]);
     const habits = ref<Habit[]|undefined>(undefined);
-    const filterCompleted = ref('fetchNotCompltedHabits');
+    const filterCompleted = ref('fetchNotCompletedHabits');
 
     onMounted(async () => {
       await changeCompletedFilter();
