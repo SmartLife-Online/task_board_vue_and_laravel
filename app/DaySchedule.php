@@ -9,6 +9,10 @@ class DaySchedule extends Model
 {
     use ModelTrait;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['day', 'user_id', 'title', 'description', 'points_upon_success', 'basis_points_at_start', 'basis_points_at_end', 'points_at_start', 'points_at_end', 'status_id', 'active'];
+
     public static function findActive(int $idDaySchedule)
     {
         $daySchedule = self::where('id', $idDaySchedule)->where('active', 1)->first();

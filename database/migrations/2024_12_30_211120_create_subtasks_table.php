@@ -22,9 +22,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->mediumInteger('points_upon_completion')->unsigned()->default(0);
             $table->boolean('completed')->default(false);
-            $table->date('marked_for_day')->nullable();
-            $table->date('marked_for_week')->nullable();
-            $table->date('marked_for_month')->nullable();
 
             $table->boolean('active')->default(1);
 
@@ -37,9 +34,6 @@ return new class extends Migration
             $table->index('project_id');
             $table->index('category_id');
             $table->index('life_area_id');
-            $table->index('marked_for_day');
-            $table->index('marked_for_week');
-            $table->index('marked_for_month');
             $table->index('completed');
             $table->index('active');
         });

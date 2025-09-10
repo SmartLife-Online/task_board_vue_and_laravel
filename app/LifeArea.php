@@ -9,6 +9,10 @@ class LifeArea extends Model
 {
     use ModelTrait;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['user_id', 'title', 'description', 'points', 'points_multiplier_in_percent', 'active'];
+
     public static function findActive(int $idLifeArea)
     {
         $lifeArea = self::where('id', $idLifeArea)->where('active', 1)->first();
@@ -49,7 +53,9 @@ class LifeArea extends Model
         
         $this->points = $this->points * $this->points_multiplier_in_percent / 100;
 
-        $this->update();
+        if($this->isDirty('points')) {
+            $this->update();
+        }
     }
 
 }

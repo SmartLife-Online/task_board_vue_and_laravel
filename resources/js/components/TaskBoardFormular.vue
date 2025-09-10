@@ -4,7 +4,12 @@
       <div v-for="(row, rowIndex) in rows" :key="rowIndex" class="row">
         <div v-for="(field, colIndex) in row" :key="colIndex" class="col-md-6 form-group">
           <label :for="field.name">{{ field.label }}</label>
-          <input :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
+          <input v-if="field?.type === 'checkbox'"
+                 type="checkbox"
+                 value="1"
+                 v-model="entry[field.name]"
+                 class="form-check-input">
+          <input v-else :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
         </div>
       </div>
       <br>

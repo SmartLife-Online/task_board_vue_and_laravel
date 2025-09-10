@@ -10,7 +10,7 @@ class User extends Model
     use ModelTrait;
 
     protected $table = 'users';
-    protected $fillable = ['name', 'email'];
+    protected $fillable = ['name', 'email', 'basis_points', 'day_schedule_basis_points', 'points', 'points_multiplier_in_percent'];
     protected $hidden = ['password', 'remember_token', 'email_verified_at'];
     
     public function lifeAreas()
@@ -46,7 +46,7 @@ class User extends Model
 
     public function calcBasisSeasonPoints()
     {
-        return $this->basis_points - $this->currentSeason->basis_points;
+        return ($this->basis_points + $this->day_schedule_basis_points) - $this->currentSeason->basis_points;
     }
 
     public function calcSeasonPoints()
@@ -69,8 +69,10 @@ class User extends Model
         }
 
         $this->points = ($this->basis_points + $this->day_schedule_basis_points) * $this->points_multiplier_in_percent / 100;
-
-        $this->update();
+        
+        if($this->isDirty('points')) {
+            $this->update();
+        }
     }
 
 }

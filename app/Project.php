@@ -9,6 +9,10 @@ class Project extends Model
 {
     use ModelTrait;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['user_id', 'id_parent_project', 'category_id', 'life_area_id', 'title', 'description', 'points', 'points_multiplier_in_percent', 'points_upon_completion', 'completed', 'completed_at', 'active'];
+
     public static function findActive(int $idProject)
     {
         $project = self::where('id', $idProject)->where('active', 1)->first();
@@ -97,7 +101,9 @@ class Project extends Model
 
         $this->points = $this->points * $this->points_multiplier_in_percent / 100;
 
-        $this->update();
+        if($this->isDirty('points')) {
+            $this->update();
+        }
     }
 
 }

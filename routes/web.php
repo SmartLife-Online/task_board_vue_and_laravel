@@ -74,6 +74,8 @@ Route::get('api/v1/day_schedules/get_pending', [DaySchedulesController::class, '
 Route::get('api/v1/day_schedules/get_successful', [DaySchedulesController::class, 'indexSuccessful'])->name('api.day_schedules.indexSuccessful');
 Route::get('api/v1/day_schedules/get_failed', [DaySchedulesController::class, 'indexFailed'])->name('api.day_schedules.indexFailed');
 Route::get('api/v1/day_schedules/get_deleted', [DaySchedulesController::class, 'indexDeleted'])->name('api.day_schedules.indexDeleted');
+Route::get('api/v1/day_schedules/get_current_day_schedule', [DaySchedulesController::class, 'getCurrentDaySchedule'])->name('api.day_schedules.getCurrentDaySchedule');
+Route::get('api/v1/day_schedules/get_current_day_schedule_part', [DaySchedulesController::class, 'getCurrentDaySchedulePart'])->name('api.day_schedules.getCurrentDaySchedulePart');
 Route::get('api/v1/day_schedules/{idDaySchedulePart}', [DaySchedulesController::class, 'get'])->name('api.day_schedules.get');
 Route::post('api/v1/day_schedules', [DaySchedulesController::class, 'store'])->name('api.day_schedules.store');
 Route::put('api/v1/day_schedules/{idDaySchedulePart}', [DaySchedulesController::class, 'update'])->name('api.day_schedules.get');

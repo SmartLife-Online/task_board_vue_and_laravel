@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use App\Task;
 use App\Project;
 use App\Category;
@@ -149,6 +151,25 @@ class TasksController extends Controller
         $task->day_schedule_part_id = $request->day_schedule_part_id ?? null;
 
         $task->save();
+
+        if($request->with_ai) {
+            $pythonPath = env('PYTHON_PATH');
+            $scriptPath = base_path('scripts\python\generate_subtasks.py');
+
+            $process = new Process([$pythonPath, $scriptPath, $task]);
+            $process->setTimeout(120);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
+            $output = $process->getOutput();
+
+            $subtasks = json_decode($output, true);
+
+            $task->createSubtasksByJSONString($output);
+        }
 
         return response()->json($task);
     }

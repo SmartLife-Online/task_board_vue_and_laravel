@@ -9,6 +9,10 @@ class Task extends Model
 {
     use ModelTrait;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['user_id', 'project_id', 'category_id', 'life_area_id', 'day_schedule_part_id', 'title', 'description', 'points', 'points_upon_completion', 'completed', 'completed_at', 'active'];
+
     public static function findActive(int $idTask)
     {
         $task = self::where('id', $idTask)->where('active', 1)->first();
@@ -155,6 +159,27 @@ class Task extends Model
     {
         return $this->hasMany(Subtask::class)->where('active', 1);
     }
+
+    public function createSubtasksByJSONString(string $jsonString): void
+    {
+        $data = json_decode($jsonString, true);
+
+        if (isset($data['subtasks']) && is_array($data['subtasks'])) {
+            foreach ($data['subtasks'] as $subtaskData) {
+                $this->subtasks()->create([
+                    'life_area_id' => $this->life_area_id,
+                    'category_id' => $this->category_id,
+                    'project_id' => $this->project_id,
+                    'task_id' => $this->id,
+                    'life_area_id' => $this->life_area_id,
+                    'day_schedule_part_id' => $this->day_schedule_part_id,
+                    'title' => $subtaskData['title'] ?? null,
+                    'description' => $subtaskData['description'] ?? null,
+                    'points_upon_completion' => $subtaskData['points_upon_completion'] ?? 0,
+                ]);
+            }
+        }
+    }
     
     public function recalcPoints() {
         $this->points = 0;
@@ -169,7 +194,9 @@ class Task extends Model
             $this->points += $this->points_upon_completion;
         }
 
-        $this->update();
+        if($this->isDirty('points')) {
+            $this->update();
+        }
 
         return $this->points;
     }

@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import TaskBoardFormular from '../../components/TaskBoardFormular.vue';
 import { FormField } from '../../types/Form';
 import { Task } from '../../types/ModelsForm';
@@ -30,6 +30,9 @@ export default {
       [
         { name: 'points_upon_completion', type: 'text', label: 'Points upon completion' },
         { name: 'day_schedule_part_id', type: 'text', label: 'Day-Schedule-Part' },
+      ],
+      [
+        { name: 'with_ai', type: 'checkbox', label: 'Create subtasks by AI?' },
       ]
     ]);
 
@@ -39,6 +42,14 @@ export default {
       description: '',
       points_upon_completion: '',
       day_schedule_part_id: null
+    });
+
+    onMounted(async () => {
+      await store.dispatch('fetchCurrentDaySchedulePart');
+      
+      const currentDaySchedulePart = store.getters.getCurrentDaySchedulePart;
+
+      task.value.day_schedule_part_id = currentDaySchedulePart.id ?? null;
     });
     
     const handleFormSubmit = async formData => {

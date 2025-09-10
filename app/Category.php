@@ -9,6 +9,10 @@ class Category extends Model
 {
     use ModelTrait;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['user_id', 'life_area_id', 'title', 'description', 'points', 'points_multiplier_in_percent', 'active'];
+
     public static function findActive(int $idCategory)
     {
         $category = self::where('id', $idCategory)->where('active', 1)->first();
@@ -83,8 +87,10 @@ class Category extends Model
         }
 
         $this->points = $this->points * $this->points_multiplier_in_percent / 100;
-
-        $this->update();
+        
+        if($this->isDirty('points')) {
+            $this->update();
+        }
     }
 
 }

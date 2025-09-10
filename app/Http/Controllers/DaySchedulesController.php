@@ -72,6 +72,30 @@ class DaySchedulesController extends Controller
         return response()->json($daySchedule);
     }
 
+    public function getCurrentDaySchedule(): JsonResponse
+    {
+        $daySchedule = DaySchedule::where('user_id', 1)->where('status_id', DS_STATUS_IN_PROGRESS)->first();
+        if(!$daySchedule) {
+            return response()->json(['error' => 'Day-Schedule not found'], 404);
+        }
+
+        return response()->json($daySchedule);
+    }
+
+    public function getCurrentDaySchedulePart(): JsonResponse
+    {
+        $daySchedule = DaySchedule::where('user_id', 1)->where('status_id', DS_STATUS_IN_PROGRESS)->first();
+        if(!$daySchedule) {
+            return response()->json(['error' => 'Day-Schedule not found'], 404);
+        }
+        
+        if(!count($daySchedule->dayScheduleParts)) {
+            return response()->json(['error' => 'No Day-Schedule-Part found'], 404);
+        }
+
+        return response()->json($daySchedule->dayScheduleParts->first());
+    }
+
     public function store(Request $request): JsonResponse
     {
         $daySchedule = new DaySchedule();

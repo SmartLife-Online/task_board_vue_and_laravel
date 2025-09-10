@@ -9,6 +9,10 @@ class Subtask extends Model
 {
     use ModelTrait;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['user_id', 'task_id', 'project_id', 'category_id', 'life_area_id', 'day_schedule_part_id', 'title', 'description', 'points_upon_completion', 'completed', 'completed_at', 'active'];
+
     public static function findActive(int $idSubtask)
     {
         $subtask = self::where('id', $idSubtask)->where('active', 1)->first();

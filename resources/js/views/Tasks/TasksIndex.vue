@@ -47,7 +47,7 @@
           <router-link :to="'/tasks/' + task.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
           <router-link :to="'/tasks/' + task.id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add subtask</router-link>
           <router-link :to="'/categories/' + task.category_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same category</router-link>
-          <router-link :to="'/projects/' + task.project_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same project</router-link>
+          <router-link v-if="task.project_id" :to="'/projects/' + task.project_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same project</router-link>
           <button v-if="task.active" @click="recalcTask(task)" class="btn btn-primary" style="margin: 8px;">Recalc</button>
           <button v-if="task.active" @click="deleteTask(task)" class="btn btn-primary" style="margin: 8px;">Delete</button>
         </td>

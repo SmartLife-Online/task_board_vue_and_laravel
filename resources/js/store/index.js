@@ -28,6 +28,8 @@ const store = createStore({
     habit: [],
     daySchedule: [],
     daySchedules: [],
+    currentDaySchedule: [],
+    currentDaySchedulePart: [],
     user: [],
   },
   mutations: {
@@ -72,6 +74,12 @@ const store = createStore({
     },
     setDaySchedule(state, daySchedule) {
       state.daySchedule = daySchedule;
+    },
+    setCurrentDaySchedule(state, currentDaySchedule) {
+      state.currentDaySchedule = currentDaySchedule;
+    },
+    setCurrentDaySchedulePart(state, currentDaySchedulePart) {
+      state.currentDaySchedulePart = currentDaySchedulePart;
     },
     setUser(state, user) {
       state.user = user;
@@ -251,7 +259,7 @@ const store = createStore({
     },
     async fetchTasks({ commit }, {idProject, idDaySchedule}) {
       try {
-        const urlString = idDaySchedule ? (daySchedulesApiString + 'all/' + idDaySchedule) : (tasksApiString + 'all/' + (idProject ? ('/' + idProject) : ''));
+        const urlString = idDaySchedule ? (daySchedulesApiString + 'all/' + idDaySchedule) : (tasksApiString + 'all/' + (idProject ? (idProject) : ''));
 
         const response = await axios.get(urlString);
 
@@ -553,6 +561,22 @@ const store = createStore({
         console.error('Error fetching Day-Schedule:', error);
       }
     },
+    async fetchCurrentDaySchedule({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_current_day_schedule');
+        commit('setCurrentDaySchedule', response.data);
+      } catch (error) {
+        console.error('Error fetching current Day-Schedule:', error);
+      }
+    },
+    async fetchCurrentDaySchedulePart({ commit }) {
+      try {
+        const response = await axios.get(daySchedulesApiString + 'get_current_day_schedule_part');
+        commit('setCurrentDaySchedulePart', response.data);
+      } catch (error) {
+        console.error('Error fetching current Day-Schedule-Part:', error);
+      }
+    },
     async fetchInProgressDaySchedules({ commit }) {
       try {
         const response = await axios.get(daySchedulesApiString + 'get_in_progress');
@@ -697,6 +721,8 @@ const store = createStore({
     getHabit: state => state.habit,
     getDaySchedules: state => state.daySchedules,
     getDaySchedule: state => state.daySchedule,
+    getCurrentDaySchedule: state => state.currentDaySchedule,
+    getCurrentDaySchedulePart: state => state.currentDaySchedulePart,
     getUser: state => state.user,
   }
 });

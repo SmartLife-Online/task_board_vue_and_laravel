@@ -9,5 +9,7 @@ class UserSeason extends Model
 {
     use ModelTrait;
 
-    protected $table = 'user_seasons';
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['user_id', 'season_id', 'points', 'basis_points'];
 }

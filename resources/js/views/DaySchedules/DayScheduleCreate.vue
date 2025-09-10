@@ -41,7 +41,7 @@ export default {
     });
     
     const handleFormSubmit = async formData => {
-      const data = await store.dispatch('submitEditDaySchedule', {formData});
+      const data = await store.dispatch('submitStoreDaySchedule', {formData});
     };
 
     return {

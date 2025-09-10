@@ -9,6 +9,10 @@ class Habit extends Model
 {
     use ModelTrait;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+
+    protected $fillable = ['user_id', 'project_id', 'category_id', 'life_area_id', 'title', 'description', 'points_per_completion', 'count_completed', 'points_upon_completion', 'completed', 'completed_at', 'active'];
+
     public static function findActive(int $idHabit)
     {
         $habit = self::where('id', $idHabit)->where('active', 1)->first();
