@@ -40,6 +40,7 @@
             <router-link :to="'/projects/' + project.id + '/add_project_to_project'" class="btn btn-primary" style="margin: 8px;">Add Sub-Project</router-link>
             <router-link :to="'/projects/' + project.id + '/add_task'" class="btn btn-primary" style="margin: 8px;">Add Task</router-link>
             <router-link :to="'/projects/' + project.id + '/add_habit'" class="btn btn-primary" style="margin: 8px;">Add Habit</router-link>
+            <button v-if="project.active" @click="recalcProject(project)" class="btn btn-primary" style="margin: 8px;">Recalc</button>
             <button v-if="project.active" @click="deleteProject(project)" class="btn btn-primary" style="margin: 8px;">Delete</button>
           </td>
         </tr>
@@ -127,6 +128,10 @@
         tasksOfProjectModalNameProject.value = '';
       };
 
+      const recalcProject = async (project) => {
+        await store.dispatch('recalcProject', project);
+      };
+
       const deleteProject = async (project) => {
         await store.dispatch('deleteProject', project);
       };
@@ -140,6 +145,7 @@
         filterCompleted,
         changeCompletedFilter,
         completeProject,
+        recalcProject,
         deleteProject
       };
     },

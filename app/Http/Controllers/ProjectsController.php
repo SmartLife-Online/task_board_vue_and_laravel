@@ -118,8 +118,8 @@ class ProjectsController extends Controller
     }
 
     public function complete(int $idProject, Request $request): JsonResponse
-    {
-        $project = Project::findActive($idProject);
+        {
+            $project = Project::findActive($idProject);
         if(!$project) return response()->json(['error' => 'Project not found'], 404);
 
         $project->completed = 1;
@@ -128,6 +128,16 @@ class ProjectsController extends Controller
         $project->update();
 
         return response()->json(['success' => true]);
+    }
+
+    public function recalcTask(int $idProject, Request $request): JsonResponse
+    {
+        $project = Project::findActive($idProject);
+        if(!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
+
+        return response()->json(['points' => $project->recalcPoints()]);
     }
 
     public function delete(int $idProject): JsonResponse

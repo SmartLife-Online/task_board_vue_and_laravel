@@ -104,6 +104,8 @@ class Project extends Model
         if($this->isDirty('points')) {
             $this->update();
         }
+
+        return $this->points;
     }
 
 }

@@ -245,6 +245,15 @@ const store = createStore({
         console.error('Error completing project:', error);
       }
     },
+    async recalcProject({ commit }, project) {
+      try {
+        const response = await axios.patch(projectsApiString + project.id + '/recalc_task');
+        
+        project.points = response.data.points;
+      } catch (error) {
+        console.error('Error deleting Project:', error);
+      }
+    },
     async deleteProject({ commit }, project) {
       try {
         const response = await axios.delete(projectsApiString + project.id);

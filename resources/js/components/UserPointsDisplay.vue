@@ -1,6 +1,6 @@
 <template>
     <div>
-        User-Points: {{ user?.points }} | {{ user?.seasonPoints }} | {{ (user?.seasonPoints || 0) - 2645 }}
+        User-Points: {{ user?.points }} | {{ user?.seasonPoints }}
         <button @click="recalcUserPoints(user)" class="btn btn-primary" style="margin-right: 12px;">Recalc</button>
         <a v-if="user?.day" :href="'/day_schedules/' + user.day_id + '/tasks'" class="btn btn-primary" style="margin-right: 12px;">Show Day {{ user.day }}</a>
         <button v-if="user?.day" @click="completeDayScheduleById(user.day_id)" class="btn btn-primary">

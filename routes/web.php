@@ -49,6 +49,7 @@ Route::post('api/v1/projects/store_to_category/{idCategory}', [ProjectsControlle
 Route::post('api/v1/projects/store_to_parent_project/{idProject}', [ProjectsController::class, 'storeToProject'])->name('api.projects.store_to_parent_project');
 Route::put('api/v1/projects/{idProject}', [ProjectsController::class, 'update'])->name('api.projects.update');
 Route::patch('api/v1/projects/{idProject}/complete', [ProjectsController::class, 'complete'])->name('api.projects.complete');
+Route::patch('api/v1/projects/{idProject}/recalc_task', [ProjectsController::class, 'recalcTask'])->name('api.projects.recalcTask');
 Route::delete('api/v1/projects/{idProject}', [ProjectsController::class, 'delete'])->name('api.projects.delete');
 
 Route::get('api/v1/tasks/all/{idProject?}', [TasksController::class, 'index'])->name('api.tasks.index');
