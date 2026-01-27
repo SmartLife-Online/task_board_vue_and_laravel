@@ -22,6 +22,7 @@ use App\Http\Controllers\DaySchedulesController;
 */
 
 Route::get('users/recalc_points', [UsersController::class, 'recalcPoints'])->name('users.recalcPoints');
+Route::get('users/seedSubtasktoTask', [UsersController::class, 'seedSubtasktoTask'])->name('users.seedSubtasktoTask');
 Route::patch('api/v1/users/{idUser}/recalc_user_points', [UsersController::class, 'recalcUserPoints'])->name('users.recalcUserPoints');
 Route::get('api/v1/users/{idUser}', [UsersController::class, 'get'])->name('api.users.get');
 
