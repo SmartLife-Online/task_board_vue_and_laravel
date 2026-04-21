@@ -4,11 +4,13 @@
       <div v-for="(row, rowIndex) in rows" :key="rowIndex" class="row">
         <div v-for="(field, colIndex) in row" :key="colIndex" class="col-md-6 form-group">
           <label :for="field.name">{{ field.label }}</label>
-          <input v-if="field?.type === 'checkbox'"
-                 type="checkbox"
-                 value="1"
-                 v-model="entry[field.name]"
-                 class="form-check-input">
+          <input
+            v-if="field?.type === 'checkbox'"
+            type="checkbox"
+            :checked="isCheckboxChecked(entry[field.name])"
+            @change="updateCheckboxValue(field.name, $event)"
+            class="form-check-input"
+          >
           <input v-else :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
         </div>
       </div>
@@ -36,12 +38,28 @@ export default {
   setup(props, { emit }) {
       const formData = ref({});
 
+      const isCheckboxChecked = (value: unknown): boolean => {
+          return value === true || value === 1 || value === '1';
+      };
+
+      const updateCheckboxValue = (fieldName: string, event: Event): void => {
+          const target = event.target as HTMLInputElement;
+
+          if (!props.entry) {
+              return;
+          }
+
+          props.entry[fieldName] = target.checked ? 1 : 0;
+      };
+
       const handleSubmit = () => {
           emit('submitForm', { ...props.entry });
       };
 
       return {
           formData,
+          isCheckboxChecked,
+          updateCheckboxValue,
           handleSubmit
       };
   }
