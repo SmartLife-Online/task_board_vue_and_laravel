@@ -13,6 +13,7 @@
           <td>{{ lifeArea.description }}</td>
           <td>{{ lifeArea.points_multiplier_in_percent }}</td>
           <td>{{ lifeArea.points }}</td>
+          <td>{{ lifeArea.basis_points }}</td>
           <td>
             <router-link :to="'/life_areas/' + lifeArea.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
             <router-link :to="'/life_areas/' + lifeArea.id + '/add_category'" class="btn btn-primary" style="margin: 8px;">Add Category</router-link>

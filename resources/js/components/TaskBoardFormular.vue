@@ -4,7 +4,6 @@
       <div v-for="(row, rowIndex) in rows" :key="rowIndex" class="row">
         <div v-for="(field, colIndex) in row" :key="colIndex" class="col-md-6 form-group">
           <label :for="field.name">{{ field.label }}</label>
-<<<<<<< Updated upstream
           <input
             v-if="field?.type === 'checkbox'"
             type="checkbox"
@@ -12,15 +11,7 @@
             @change="updateCheckboxValue(field.name, $event)"
             class="form-check-input"
           >
-          <input v-else :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
-=======
-          <input v-if="field?.type === 'checkbox'"
-                 type="checkbox"
-                 :id="field.name"
-                 v-model="entry[field.name]"
-                 class="form-check-input">
           <input v-else :id="field.name" :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
->>>>>>> Stashed changes
         </div>
       </div>
       <slot />
