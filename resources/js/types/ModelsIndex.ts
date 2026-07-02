@@ -2,6 +2,7 @@ export interface LifeArea {
     id: number;
     title: string;
     description: string;
+    basis_points: number;
     points: number;
     points_multiplier_in_percent: number;
     active: boolean;

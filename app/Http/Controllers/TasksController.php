@@ -2,18 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Http\JsonResponse;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
-use App\Task;
-use App\Project;
 use App\Category;
 use App\DaySchedule;
+use App\Project;
+use App\Task;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class TasksController extends Controller
 {
+    private function syncCompletedState(Task $task, bool $completed): void
+    {
+        $task->completed = $completed;
+
+        if ($completed) {
+            $task->completed_at = $task->completed_at ?? now();
+
+            return;
+        }
+
+        $task->completed_at = null;
+    }
 
     public function index(?int $idProject = null): JsonResponse
     {
@@ -82,8 +94,8 @@ class TasksController extends Controller
     public function indexJSON(Collection $tasks): JsonResponse
     {
         $tasksJSON = [];
-        
-        foreach($tasks as $task) {
+
+        foreach ($tasks as $task) {
             $tasksJSON[] = [
                 'id' => $task->id,
                 'life_area' => $task->lifeArea->title ?? '',
@@ -106,7 +118,7 @@ class TasksController extends Controller
 
     public function get(int $idTask): JsonResponse
     {
-        $task = Task::findActive($idTask);
+        $task = Task::findActive($idTask)->load('subtasks');
 
         return response()->json($task);
     }
@@ -114,12 +126,12 @@ class TasksController extends Controller
     public function storeToCategory(int $idCategory, Request $request): JsonResponse
     {
         $category = Category::findActive($idCategory);
-        if(!$category) {
+        if (! $category) {
             return response()->json(['error' => 'Category not found'], 404);
         }
 
-        $task = new Task();
-        
+        $task = new Task;
+
         $task->life_area_id = $category->life_area_id;
         $task->category_id = $category->id;
         $task->project_id = null;
@@ -127,8 +139,18 @@ class TasksController extends Controller
         $task->description = $request->description;
         $task->points_upon_completion = $request->points_upon_completion;
         $task->day_schedule_part_id = $request->day_schedule_part_id ?? null;
+        $this->syncCompletedState($task, $request->boolean('completed'));
 
         $task->save();
+
+        if (is_array($request->subtasks)) {
+            $task->createSubtasks($request->subtasks);
+        }
+
+        $daySchedule = DaySchedule::getCurrentDay();
+        if ($daySchedule) {
+            $task->day_schedule_id = $daySchedule->id;
+        }
 
         return response()->json($task);
     }
@@ -136,12 +158,12 @@ class TasksController extends Controller
     public function storeToProject(int $idProject, Request $request): JsonResponse
     {
         $project = Project::findActive($idProject);
-        if(!$project) {
+        if (! $project) {
             return response()->json(['error' => 'Project not found'], 404);
         }
 
-        $task = new Task();
-        
+        $task = new Task;
+
         $task->life_area_id = $project->life_area_id;
         $task->category_id = $project->category_id;
         $task->project_id = $project->id;
@@ -149,10 +171,15 @@ class TasksController extends Controller
         $task->description = $request->description;
         $task->points_upon_completion = $request->points_upon_completion;
         $task->day_schedule_part_id = $request->day_schedule_part_id ?? null;
+        $this->syncCompletedState($task, $request->boolean('completed'));
 
         $task->save();
 
-        if($request->with_ai) {
+        if (is_array($request->subtasks)) {
+            $task->createSubtasks($request->subtasks);
+        }
+
+        if ($request->with_ai) {
             $pythonPath = env('PYTHON_PATH');
             $scriptPath = base_path('scripts\python\generate_subtasks.py');
 
@@ -160,7 +187,7 @@ class TasksController extends Controller
             $process->setTimeout(120);
             $process->run();
 
-            if (!$process->isSuccessful()) {
+            if (! $process->isSuccessful()) {
                 throw new ProcessFailedException($process);
             }
 
@@ -171,13 +198,18 @@ class TasksController extends Controller
             $task->createSubtasksByJSONString($output);
         }
 
+        $daySchedule = DaySchedule::getCurrentDay();
+        if ($daySchedule) {
+            $task->day_schedule_id = $daySchedule->id;
+        }
+
         return response()->json($task);
     }
 
     public function update(int $idTask, Request $request): JsonResponse
     {
         $task = Task::findActive($idTask);
-        if(!$task) {
+        if (! $task) {
             return response()->json(['error' => 'Task not found'], 404);
         }
 
@@ -185,15 +217,25 @@ class TasksController extends Controller
         $task->description = $request->description;
         $task->points_upon_completion = $request->points_upon_completion;
         $task->day_schedule_part_id = $request->day_schedule_part_id ?: null;
+        $this->syncCompletedState($task, $request->boolean('completed'));
 
         $task->update();
 
-        if($task->wasChanged('day_schedule_part_id')) {  
+        if (is_array($request->subtasks)) {
+            $task->syncSubtasks($request->subtasks);
+        }
+
+        if ($task->wasChanged('day_schedule_part_id')) {
             foreach ($task->subtasks as $subtask) {
                 $subtask->day_schedule_part_id = $task->day_schedule_part_id;
 
                 $subtask->update();
             }
+        }
+
+        $daySchedule = DaySchedule::getCurrentDay();
+        if ($daySchedule) {
+            $task->day_schedule_id = $daySchedule->id;
         }
 
         return response()->json($task);
@@ -202,12 +244,11 @@ class TasksController extends Controller
     public function complete(int $idTask, Request $request): JsonResponse
     {
         $task = Task::findActive($idTask);
-        if(!$task) {
+        if (! $task) {
             return response()->json(['error' => 'Task not found'], 404);
         }
 
-        $task->completed = 1;
-        $task->completed_at = now();
+        $this->syncCompletedState($task, true);
 
         $task->update();
 
@@ -217,7 +258,7 @@ class TasksController extends Controller
     public function recalcTask(int $idTask, Request $request): JsonResponse
     {
         $task = Task::findActive($idTask);
-        if(!$task) {
+        if (! $task) {
             return response()->json(['error' => 'Task not found'], 404);
         }
 
@@ -227,7 +268,7 @@ class TasksController extends Controller
     public function delete(int $idTask): JsonResponse
     {
         $task = Task::findActive($idTask);
-        if(!$task) {
+        if (! $task) {
             return response()->json(['error' => 'Task not found'], 404);
         }
 
@@ -237,5 +278,4 @@ class TasksController extends Controller
 
         return response()->json(['success' => true]);
     }
-
 }

@@ -21,12 +21,28 @@ export interface Task {
     description: string;
     points_upon_completion: string;
     day_schedule_part_id: number | null;
+    completed: boolean;
+    with_ai?: boolean;
+    subtasks?: TaskSubtaskDraft[];
+}
+
+export interface TaskSubtaskDraft {
+    id?: number;
+    title: string;
+    description: string;
+    points_upon_completion: string;
+    completed: boolean;
+}
+
+export interface SubtaskCreateForm {
+    subtasks: TaskSubtaskDraft[];
 }
 
 export interface Subtask {
     title: string;
     description: string;
     points_upon_completion: string;
+    completed: boolean;
 }
 
 export interface Habit {

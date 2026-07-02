@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Http\JsonResponse;
-use App\User;
 use App\DaySchedule;
 use App\Task;
+use App\User;
+use Illuminate\Http\JsonResponse;
 
 class UsersController extends Controller
 {
-
     public function get(int $idUser): JsonResponse
     {
         $user = User::find($idUser);
@@ -26,15 +23,17 @@ class UsersController extends Controller
         return response()->json($user);
     }
 
-    public static function recalcUserPoints($idUser): JsonResponse{
+    public static function recalcUserPoints($idUser): JsonResponse
+    {
         $user = User::find($idUser);
-        
+
         $user->recalcPoints();
-        
+
         return response()->json(['success' => true, 'points' => $user->points]);
     }
 
-    public function recalcPoints() {
+    public function recalcPoints()
+    {
         $users = User::with('lifeAreas.categories.projects.tasks.subtasks', 'lifeAreas.categories.projects.habits', 'daySchedulesSuccessful')->get();
         /*$users = User::with([
               'lifeAreas' => function($q)
@@ -58,10 +57,10 @@ class UsersController extends Controller
                     $q->select('id', 'life_area_id', 'category_id', 'project_id', 'task_id', 'points_upon_completion', 'completed');
                }
           ])->get();*/
-        
+
         $totalPoints = 0;
         $timeStart = microtime(true);
-        
+
         foreach ($users as $user) {
             $user->recalcPoints();
 
@@ -70,39 +69,86 @@ class UsersController extends Controller
 
         $timeEnd = microtime(true);
 
-        return 'Points recalculated: ' . $totalPoints . ' <br>In ' . ($timeEnd - $timeStart) . ' seconds';
+        return 'Points recalculated: '.$totalPoints.' <br>In '.($timeEnd - $timeStart).' seconds';
     }
 
     public function seedSubtasktoTask(): JsonResponse
     {
-     return false; // Deaktiviert, damit es nicht versehentlich ausgefuehrt wird.
+        return false; // Deaktiviert, damit es nicht versehentlich ausgefuehrt wird.
         // Gemeinsame IDs fuer alle Tasks und Subtasks.
-        $lifeAreaId = 6;
+        $lifeAreaId = 1;
+        $categoryId = 34;
+        $projectId = 240;
+        $daySchedulePartId = 1073;
+
+        // Tasks, die erstellt werden sollen.
+        $tasks = [
+            ['title' => 'KI-Workflow im Marketing: Was er ist & wann er sich lohnt', 'points_upon_completion' => 125],
+        ];
+
+        // Subtasks, die fuer jeden Task angelegt werden sollen.
+        /*$subtasks = [
+            ['title' => 'Ticket umsetzen lassen', 'points_upon_completion' => 35],
+            ['title' => 'Die Code-Änderungen prüfen', 'points_upon_completion' => 35],
+            ['title' => 'Code-Review machen lassen', 'points_upon_completion' => 20],
+            ['title' => 'Den Code-Review nachbessern lassen und prüfen', 'points_upon_completion' => 35],
+        ];*/
+
+        // Subtasks, die fuer jeden Task angelegt werden sollen.
+        /*$subtasks = [
+            ['title' => 'Text und FAQ erstellen', 'points_upon_completion' => 20],
+            ['title' => 'Links einfügen', 'points_upon_completion' => 15],
+            ['title' => 'Das JSON erstellen und befüllen', 'points_upon_completion' => 15],
+            ['title' => 'Das Bild erstellen und optimieren', 'points_upon_completion' => 20],
+            ['title' => 'Den Text lesen und ggf. nachbessern', 'points_upon_completion' => 45],
+            ['title' => 'Das FAQ lesen und ggf. nachbessern', 'points_upon_completion' => 20],
+        ];*/
+
+        // Subtasks, die fuer jeden Task angelegt werden sollen.
+        $subtasks = [
+            // ['title' => 'Die Struktur erstellen lassen und prüfen', 'points_upon_completion' => 25],
+            ['title' => 'Das Deep-Research durchführen lassen', 'points_upon_completion' => 25],
+            ['title' => 'Den Text umformulieren lassen', 'points_upon_completion' => 10],
+            ['title' => 'Den Titel und die Beschreibung verfassen', 'points_upon_completion' => 10],
+            ['title' => 'Links einfügen', 'points_upon_completion' => 15],
+            ['title' => 'Das JSON erstellen und befüllen', 'points_upon_completion' => 15],
+            ['title' => 'Das Bild erstellen und optimieren', 'points_upon_completion' => 20],
+            ['title' => 'Den Text lesen und ggf. nachbessern', 'points_upon_completion' => 60],
+            ['title' => 'Das FAQ lesen und ggf. nachbessern', 'points_upon_completion' => 20],
+            // ['title' => 'Den LinkedIn-Post verfassen und nachbessern', 'points_upon_completion' => 25],
+            // ['title' => 'Den LinkedIn-Post veröffentlichen und prüfen', 'points_upon_completion' => 10],
+        ];
+
+        // Gemeinsame IDs fuer alle Tasks und Subtasks.
+        /*$lifeAreaId = 6;
         $categoryId = 40;
-        $projectId = 154;
+        $projectId = 211;
         $daySchedulePartId = null;
 
         // Tasks, die erstellt werden sollen.
         $tasks = [
-            ['title' => '2. Mission', 'points_upon_completion' => 100],
-            ['title' => '3. Mission', 'points_upon_completion' => 100],
-            ['title' => '4. Mission', 'points_upon_completion' => 100],
-            ['title' => '5. Mission', 'points_upon_completion' => 100],
-            ['title' => '6. Mission', 'points_upon_completion' => 100],
-            ['title' => '7. Mission', 'points_upon_completion' => 100],
-            ['title' => '8. Mission', 'points_upon_completion' => 100],
-            ['title' => '9. Mission', 'points_upon_completion' => 100],
-            ['title' => '10. Mission', 'points_upon_completion' => 100],
-            ['title' => '11. Mission', 'points_upon_completion' => 100],
-            ['title' => '12. Mission', 'points_upon_completion' => 100],
+            ['title' => 'König Arthas', 'points_upon_completion' => 100],
+            ['title' => 'Ein geteiltes Königreich', 'points_upon_completion' => 100],
+            ['title' => 'Die Flucht aus Lordaeron', 'points_upon_completion' => 100],
+            ['title' => 'Sylvanas Abschied', 'points_upon_completion' => 100],
+            ['title' => 'Die Dunkle Fürstin', 'points_upon_completion' => 100],
+            ['title' => 'Die Rückkehr nach Nordend', 'points_upon_completion' => 100],
+            ['title' => 'Der Sturz des Schreckenslords', 'points_upon_completion' => 100],
+            ['title' => 'Eine neue Macht in Lordaeron', 'points_upon_completion' => 100],
+            ['title' => 'Hinein in die Schattengespinsthöhlen', 'points_upon_completion' => 100],
+            ['title' => 'Die vergessenen', 'points_upon_completion' => 100],
+            ['title' => 'Der Weg zum oberen Königreich', 'points_upon_completion' => 100],
+            ['title' => 'Siedepunkt', 'points_upon_completion' => 100],
+            ['title' => 'Eine Symphonie aus Frost und Flammen', 'points_upon_completion' => 100],
+            ['title' => 'Entscheidungskampf', 'points_upon_completion' => 100],
+            ['title' => 'Der Aufstieg', 'points_upon_completion' => 100]
         ];
 
         // Subtasks, die fuer jeden Task angelegt werden sollen.
         $subtasks = [
-            ['title' => 'Die Mission spielen', 'points_upon_completion' => 45],
-            ['title' => 'Die Ork-Mission schauen', 'points_upon_completion' => 15],
+            ['title' => 'Die Mission spielen', 'points_upon_completion' => 60],
             ['title' => 'Die eigene Story ausdenken', 'points_upon_completion' => 40],
-        ];
+        ];*/
 
         if ($lifeAreaId === null || $categoryId === null || $projectId === null) {
             return response()->json([
@@ -127,10 +173,11 @@ class UsersController extends Controller
             $taskTitle = $taskData['title'] ?? null;
             $taskPoints = (int) ($taskData['points_upon_completion'] ?? 0);
 
-            if (!$taskTitle) {
+            if (! $taskTitle) {
                 $skippedTasks[] = [
                     'reason' => 'missing_title',
                 ];
+
                 continue;
             }
 
@@ -155,11 +202,12 @@ class UsersController extends Controller
                 $subtaskTitle = $subtaskData['title'] ?? null;
                 $subtaskPoints = (int) ($subtaskData['points_upon_completion'] ?? 0);
 
-                if (!$subtaskTitle) {
+                if (! $subtaskTitle) {
                     $skippedSubtasks[] = [
                         'task_id' => $task->id,
                         'reason' => 'missing_title',
                     ];
+
                     continue;
                 }
 
@@ -171,6 +219,7 @@ class UsersController extends Controller
                         'title' => $subtaskTitle,
                         'reason' => 'already_exists',
                     ];
+
                     continue;
                 }
 
@@ -215,5 +264,4 @@ class UsersController extends Controller
             'skipped_subtasks' => $skippedSubtasks,
         ]);
     }
-
 }

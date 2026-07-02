@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\ModelTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class DaySchedulePart extends Model
 {
@@ -13,11 +13,13 @@ class DaySchedulePart extends Model
 
     protected $fillable = ['user_id', 'day_schedule_id', 'day_schedule_part_template_id', 'title', 'description', 'from_time', 'to_time', 'active'];
 
-    public static function findActive(int $idDaySchedulePart)
+    public static function findActive(int $idDaySchedulePart, bool $abortIfNotFound = true)
     {
         $daySchedulePart = self::where('id', $idDaySchedulePart)->where('active', 1)->first();
 
-        if(!$daySchedulePart) abort(response()->json(['message' => 'Day-Schedule-Part not found'], 404));
+        if (! $daySchedulePart && $abortIfNotFound) {
+            abort(response()->json(['message' => 'Day-Schedule-Part not found'], 404));
+        }
 
         return $daySchedulePart;
     }

@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\ModelTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
@@ -17,7 +17,9 @@ class Task extends Model
     {
         $task = self::where('id', $idTask)->where('active', 1)->first();
 
-        if(!$task) abort(response()->json(['message' => 'Task not found'], 404));
+        if (! $task) {
+            abort(response()->json(['message' => 'Task not found'], 404));
+        }
 
         return $task;
     }
@@ -29,7 +31,7 @@ class Task extends Model
         if ($idProject) {
             $query = $query->where('project_id', $idProject);
         }
-        
+
         return $query->get();
     }
 
@@ -40,7 +42,7 @@ class Task extends Model
         if ($idProject) {
             $query = $query->where('project_id', $idProject);
         }
-        
+
         return $query->get();
     }
 
@@ -51,7 +53,7 @@ class Task extends Model
         if ($idProject) {
             $query = $query->where('project_id', $idProject);
         }
-        
+
         return $query->get();
     }
 
@@ -62,11 +64,12 @@ class Task extends Model
         if ($idProject) {
             $query = $query->where('project_id', $idProject);
         }
-        
+
         return $query->get();
     }
 
-    public static function allSortedBylifeAreaAndCategoryAndProject() {
+    public static function allSortedBylifeAreaAndCategoryAndProject()
+    {
         return self::where('active', 1)
             ->orderBy('life_area_id')
             ->orderBy('category_id')
@@ -91,7 +94,6 @@ class Task extends Model
             ->get();
     }
 
-
     public static function allCompletedFromDaySchedule(?int $idDaySchedule)
     {
         return self::where('active', 1)
@@ -99,7 +101,6 @@ class Task extends Model
             ->whereIn('day_schedule_part_id', DaySchedule::getIdsdayScheduleParts($idDaySchedule))
             ->get();
     }
-
 
     public static function allDeletedFromDaySchedule(?int $idDaySchedule)
     {
@@ -160,45 +161,113 @@ class Task extends Model
         return $this->hasMany(Subtask::class)->where('active', 1);
     }
 
+    private function syncSubtaskCompletedState(Subtask $subtask, bool $completed): void
+    {
+        $subtask->completed = $completed;
+
+        if ($completed) {
+            $subtask->completed_at = $subtask->completed_at ?? now();
+
+            return;
+        }
+
+        $subtask->completed_at = null;
+    }
+
+    private function applySubtaskData(Subtask $subtask, array $subtaskData): void
+    {
+        $subtask->life_area_id = $this->life_area_id;
+        $subtask->category_id = $this->category_id;
+        $subtask->project_id = $this->project_id;
+        $subtask->task_id = $this->id;
+        $subtask->day_schedule_part_id = $this->day_schedule_part_id;
+        $subtask->title = trim((string) ($subtaskData['title'] ?? ''));
+        $subtask->description = trim((string) ($subtaskData['description'] ?? ''));
+        $subtask->points_upon_completion = $subtaskData['points_upon_completion'] ?? 0;
+        $this->syncSubtaskCompletedState($subtask, filter_var($subtaskData['completed'] ?? false, FILTER_VALIDATE_BOOLEAN));
+    }
+
+    private function createSubtask(array $subtaskData): ?Subtask
+    {
+        $title = trim((string) ($subtaskData['title'] ?? ''));
+
+        if ($title === '') {
+            return null;
+        }
+
+        $subtask = new Subtask;
+        $this->applySubtaskData($subtask, $subtaskData);
+        $subtask->save();
+
+        return $subtask;
+    }
+
+    public function createSubtasks(array $subtasksData): void
+    {
+        foreach ($subtasksData as $subtaskData) {
+            if (! is_array($subtaskData)) {
+                continue;
+            }
+
+            $this->createSubtask($subtaskData);
+        }
+    }
+
+    public function syncSubtasks(array $subtasksData): void
+    {
+        foreach ($subtasksData as $subtaskData) {
+            if (! is_array($subtaskData)) {
+                continue;
+            }
+
+            $subtaskId = $subtaskData['id'] ?? null;
+
+            if ($subtaskId) {
+                $subtask = $this->subtasks()->where('id', $subtaskId)->first();
+
+                if (! $subtask) {
+                    continue;
+                }
+
+                $this->applySubtaskData($subtask, $subtaskData);
+                $subtask->save();
+
+                continue;
+            }
+
+            $this->createSubtask($subtaskData);
+        }
+    }
+
     public function createSubtasksByJSONString(string $jsonString): void
     {
         $data = json_decode($jsonString, true);
 
         if (isset($data['subtasks']) && is_array($data['subtasks'])) {
-            foreach ($data['subtasks'] as $subtaskData) {
-                $this->subtasks()->create([
-                    'life_area_id' => $this->life_area_id,
-                    'category_id' => $this->category_id,
-                    'project_id' => $this->project_id,
-                    'task_id' => $this->id,
-                    'life_area_id' => $this->life_area_id,
-                    'day_schedule_part_id' => $this->day_schedule_part_id,
-                    'title' => $subtaskData['title'] ?? null,
-                    'description' => $subtaskData['description'] ?? null,
-                    'points_upon_completion' => $subtaskData['points_upon_completion'] ?? 0,
-                ]);
-            }
+            $this->createSubtasks($data['subtasks']);
         }
     }
-    
-    public function recalcPoints() {
+
+    public function recalcPoints()
+    {
         $this->points = 0;
 
         foreach ($this->subtasks as $subtask) {
-            if(!$subtask->completed) continue;
+            if (! $subtask->completed) {
+                continue;
+            }
 
             $this->points += $subtask->points_upon_completion;
         }
 
-        if($this->completed) {
+        if ($this->completed) {
             $this->points += $this->points_upon_completion;
         }
 
-        if($this->isDirty('points')) {
+        if ($this->isDirty('points')) {
             $this->update();
         }
 
         return $this->points;
     }
-
 }

@@ -29,6 +29,9 @@
       ],
         [
           { name: 'points_upon_completion', type: 'text', label: 'Points upon completion' },
+        ],
+        [
+          { name: 'completed', type: 'checkbox', label: 'Completed?' },
         ]
       ]);
       const idSubtask = parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);

@@ -39,7 +39,7 @@
         <td>
           <button v-if="!subtask.completed" @click="completeSubtask(subtask)" class="btn btn-primary" style="margin: 8px;">Complete</button>
           <router-link :to="'/subtasks/' + subtask.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
-          <router-link :to="'/tasks/' + subtask.task_id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add Subtask to same Task</router-link>
+          <router-link :to="'/tasks/' + subtask.task_id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add Subtasks to same Task</router-link>
           <button v-if="subtask.active" @click="deleteSubtask(subtask)" class="btn btn-primary" style="margin: 8px;">Delete</button>
         </td>
       </tr>

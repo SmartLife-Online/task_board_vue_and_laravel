@@ -340,6 +340,12 @@ const store = createStore({
       try {
         const response = await axios.put(tasksApiString + idTask, formData);
         commit('setTask', response.data);
+
+        if(response.data.day_schedule_id) {
+          router.push({ name: 'TasksOfDayScheduleIndex', params: { idDaySchedule: response.data.day_schedule_id } });
+          return;
+        }
+
         router.push({ name: 'TasksIndex' });
       } catch (error) {
         console.error('Error submitting Task form data:', error);
@@ -418,7 +424,13 @@ const store = createStore({
     async submitStoreSubtask({ commit }, {idTask, formData}) {
       try {
         const response = await axios.post(subtasksApiString + idTask, formData);
-        commit('setSubtask', response.data);
+
+        if (Array.isArray(response.data)) {
+          commit('setSubtasks', response.data);
+        } else {
+          commit('setSubtask', response.data);
+        }
+
         router.push({ name: 'SubtasksIndex' });
       } catch (error) {
         console.error('Error submitting Subtask form data:', error);

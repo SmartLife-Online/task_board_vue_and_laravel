@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\LifeArea;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class LifeAreasController extends Controller
 {
@@ -13,12 +13,13 @@ class LifeAreasController extends Controller
         $lifeAreas = LifeArea::allActive();
 
         $lifeAreasJSON = [];
-        
-        foreach($lifeAreas as $lifeArea) {
+
+        foreach ($lifeAreas as $lifeArea) {
             $lifeAreasJSON[] = [
                 'id' => $lifeArea->id,
                 'title' => $lifeArea->title,
                 'description' => $lifeArea->description,
+                'basis_points' => $lifeArea->basis_points,
                 'points' => $lifeArea->points,
                 'points_multiplier_in_percent' => $lifeArea->points_multiplier_in_percent,
                 'active' => $lifeArea->active,
@@ -31,7 +32,7 @@ class LifeAreasController extends Controller
     public function get(int $idLifeArea): JsonResponse
     {
         $lifeArea = LifeArea::findActive($idLifeArea);
-        if(!$lifeArea) {
+        if (! $lifeArea) {
             return response()->json(['error' => 'Life-Area not found'], 404);
         }
 
@@ -41,7 +42,7 @@ class LifeAreasController extends Controller
     public function update(int $idLifeArea, Request $request): JsonResponse
     {
         $lifeArea = LifeArea::findActive($idLifeArea);
-        if(!$lifeArea) {
+        if (! $lifeArea) {
             return response()->json(['error' => 'Life-Area not found'], 404);
         }
 
@@ -57,7 +58,7 @@ class LifeAreasController extends Controller
     public function delete(int $idLifeArea): JsonResponse
     {
         $lifeArea = LifeArea::findActive($idLifeArea);
-        if(!$lifeArea) {
+        if (! $lifeArea) {
             return response()->json(['error' => 'Life-Area not found'], 404);
         }
 

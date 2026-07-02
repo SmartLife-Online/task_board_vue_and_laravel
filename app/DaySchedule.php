@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\ModelTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class DaySchedule extends Model
 {
@@ -17,7 +17,9 @@ class DaySchedule extends Model
     {
         $daySchedule = self::where('id', $idDaySchedule)->where('active', 1)->first();
 
-        if(!$daySchedule) abort(response()->json(['message' => 'Day-Schedule not found'], 404));
+        if (! $daySchedule) {
+            abort(response()->json(['message' => 'Day-Schedule not found'], 404));
+        }
 
         return $daySchedule;
     }
@@ -52,6 +54,11 @@ class DaySchedule extends Model
         return self::where('active', 0)->get();
     }
 
+    public static function getCurrentDay(int $idUser = 1)
+    {
+        return self::where('user_id', $idUser)->where('status_id', DS_STATUS_IN_PROGRESS)->first();
+    }
+
     public function dayScheduleParts()
     {
         return $this->hasMany(DaySchedulePart::class)->where('active', 1);
@@ -62,13 +69,16 @@ class DaySchedule extends Model
         return DaySchedulePart::allActive(idDaySchedule: $idDaySchedule, getQuery: true)->pluck('id');
     }
 
-    public function getTasks() {
+    public function getTasks()
+    {
         $tasks = collect();
-        
-        foreach($this->dayScheduleParts as $dayScheduleParts) {
-            if(!$dayScheduleParts->tasks) continue;
-            
-            foreach($dayScheduleParts->tasks as $task) {
+
+        foreach ($this->dayScheduleParts as $dayScheduleParts) {
+            if (! $dayScheduleParts->tasks) {
+                continue;
+            }
+
+            foreach ($dayScheduleParts->tasks as $task) {
                 $tasks->push($task);
             }
         }
@@ -76,9 +86,12 @@ class DaySchedule extends Model
         return $tasks;
     }
 
-    public function checkIfAllTasksAreCompleted() {
-        foreach($this->getTasks() as $task) {
-            if($task->completed) continue;
+    public function checkIfAllTasksAreCompleted()
+    {
+        foreach ($this->getTasks() as $task) {
+            if ($task->completed) {
+                continue;
+            }
 
             return false;
         }

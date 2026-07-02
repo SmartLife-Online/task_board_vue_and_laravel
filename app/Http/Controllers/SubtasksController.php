@@ -2,14 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Http\JsonResponse;
 use App\Subtask;
 use App\Task;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class SubtasksController extends Controller
 {
+    private function syncCompletedState(Subtask $subtask, bool $completed): void
+    {
+        $subtask->completed = $completed;
+
+        if ($completed) {
+            $subtask->completed_at = $subtask->completed_at ?? now();
+
+            return;
+        }
+
+        $subtask->completed_at = null;
+    }
+
+    private function createSubtaskFromPayload(Task $task, array $subtaskData): ?Subtask
+    {
+        $title = trim((string) ($subtaskData['title'] ?? ''));
+
+        if ($title === '') {
+            return null;
+        }
+
+        $subtask = new Subtask;
+
+        $subtask->life_area_id = $task->life_area_id;
+        $subtask->category_id = $task->category_id;
+        $subtask->project_id = $task->project_id;
+        $subtask->task_id = $task->id;
+        $subtask->title = $title;
+        $subtask->description = trim((string) ($subtaskData['description'] ?? ''));
+        $subtask->points_upon_completion = $subtaskData['points_upon_completion'] ?? 0;
+        $subtask->day_schedule_part_id = $task->day_schedule_part_id;
+        $this->syncCompletedState($subtask, filter_var($subtaskData['completed'] ?? false, FILTER_VALIDATE_BOOLEAN));
+
+        $subtask->save();
+
+        return $subtask;
+    }
+
     public function index(?int $idTask = null): JsonResponse
     {
         return self::indexJSON(Subtask::allActive($idTask));
@@ -34,7 +72,7 @@ class SubtasksController extends Controller
     {
         $subtasksJSON = [];
 
-        foreach($subtasks as $subtask) {
+        foreach ($subtasks as $subtask) {
             $subtasksJSON[] = [
                 'id' => $subtask->id,
                 'life_area' => $subtask->lifeArea->title ?? '',
@@ -60,7 +98,7 @@ class SubtasksController extends Controller
     public function get(int $idSubtask): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
-        if(!$subtask) {
+        if (! $subtask) {
             return response()->json(['error' => 'Subtask not found'], 404);
         }
 
@@ -70,22 +108,30 @@ class SubtasksController extends Controller
     public function store(int $idTask, Request $request): JsonResponse
     {
         $task = Task::findActive($idTask);
-        if(!$task) {
+        if (! $task) {
             return response()->json(['error' => 'Task not found'], 404);
         }
 
-        $subtask = new Subtask();
-        
-        $subtask->life_area_id = $task->life_area_id;
-        $subtask->category_id = $task->category_id;
-        $subtask->project_id = $task->project_id;
-        $subtask->task_id = $task->id;
-        $subtask->title = $request->title;
-        $subtask->description = $request->description;
-        $subtask->points_upon_completion = $request->points_upon_completion;
-        $subtask->day_schedule_part_id = $task->day_schedule_part_id;
+        if (is_array($request->subtasks)) {
+            $createdSubtasks = [];
 
-        $subtask->save();
+            foreach ($request->subtasks as $subtaskData) {
+                $subtask = $this->createSubtaskFromPayload($task, is_array($subtaskData) ? $subtaskData : []);
+
+                if ($subtask) {
+                    $createdSubtasks[] = $subtask;
+                }
+            }
+
+            return response()->json($createdSubtasks);
+        }
+
+        $subtask = $this->createSubtaskFromPayload($task, $request->only([
+            'title',
+            'description',
+            'points_upon_completion',
+            'completed',
+        ]));
 
         return response()->json($subtask);
     }
@@ -93,13 +139,14 @@ class SubtasksController extends Controller
     public function update(int $idSubtask, Request $request): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
-        if(!$subtask) {
+        if (! $subtask) {
             return response()->json(['error' => 'Subtask not found'], 404);
         }
 
         $subtask->title = $request->title;
         $subtask->description = $request->description;
         $subtask->points_upon_completion = $request->points_upon_completion;
+        $this->syncCompletedState($subtask, $request->boolean('completed'));
 
         $subtask->update();
 
@@ -109,12 +156,11 @@ class SubtasksController extends Controller
     public function complete(int $idSubtask): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
-        if(!$subtask) {
+        if (! $subtask) {
             return response()->json(['error' => 'Subtask not found'], 404);
         }
 
-        $subtask->completed = 1;
-        $subtask->completed_at = now();
+        $this->syncCompletedState($subtask, true);
 
         $subtask->update();
 
@@ -124,7 +170,7 @@ class SubtasksController extends Controller
     public function delete(int $idSubtask): JsonResponse
     {
         $subtask = Subtask::findActive($idSubtask);
-        if(!$subtask) {
+        if (! $subtask) {
             return response()->json(['error' => 'Subtask not found'], 404);
         }
 
