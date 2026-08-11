@@ -98,7 +98,7 @@
           return;
         }
 
-        const points = `${user.value.points} | ${user.value.seasonPoints} | ${user.value.seasonBasisPoints}`;
+        const points = `${user.value.points} | ${user.value.seasonPoints} | ${Math.floor((user.value.seasonBasisPoints || 0) / 50 - 1867)} | ${Math.floor((user.value.seasonBasisPoints || 0) / 50 - 10657)}`;
 
         try {
           if (navigator.clipboard?.writeText) {

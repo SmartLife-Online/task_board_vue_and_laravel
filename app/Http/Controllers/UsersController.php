@@ -77,22 +77,45 @@ class UsersController extends Controller
         return false; // Deaktiviert, damit es nicht versehentlich ausgefuehrt wird.
         // Gemeinsame IDs fuer alle Tasks und Subtasks.
         $lifeAreaId = 1;
+        $categoryId = 25;
+        $projectId = 247;
+        //$projectId = 250;	// Webseite Sicher
+        //$projectId = 258; // AI6 Phase 1
+        /*$lifeAreaId = 2;
         $categoryId = 34;
-        $projectId = 240;
-        $daySchedulePartId = 1073;
+        $projectId = 261; // Aventini Copilot CLI Tool*/
+        $daySchedulePartId = 1193;
 
         // Tasks, die erstellt werden sollen.
-        $tasks = [
-            ['title' => 'KI-Workflow im Marketing: Was er ist & wann er sich lohnt', 'points_upon_completion' => 125],
+        /*$tasks = [
+            ['title' => 'T-006', 'points_upon_completion' => 140],
+            ['title' => 'T-006b', 'points_upon_completion' => 140],
+            ['title' => 'T-007', 'points_upon_completion' => 140],
+            ['title' => 'T-008', 'points_upon_completion' => 140],
         ];
 
         // Subtasks, die fuer jeden Task angelegt werden sollen.
-        /*$subtasks = [
-            ['title' => 'Ticket umsetzen lassen', 'points_upon_completion' => 35],
-            ['title' => 'Die Code-Änderungen prüfen', 'points_upon_completion' => 35],
-            ['title' => 'Code-Review machen lassen', 'points_upon_completion' => 20],
-            ['title' => 'Den Code-Review nachbessern lassen und prüfen', 'points_upon_completion' => 35],
+        $subtasks = [
+            ['title' => 'Ticket umsetzen lassen', 'points_upon_completion' => 25],
+            ['title' => 'Die Ergebnis prüfen', 'points_upon_completion' => 15],
+            ['title' => 'Code-Reviews machen lassen', 'points_upon_completion' => 50],
+            ['title' => 'Den Code-Reviews nachbessern lassen und prüfen', 'points_upon_completion' => 50]
         ];*/
+		
+		$tasks = [
+            ['title' => 'T-009', 'points_upon_completion' => 110],
+            ['title' => 'T-009b', 'points_upon_completion' => 110],
+            ['title' => 'T-010', 'points_upon_completion' => 110],
+            ['title' => 'T-011', 'points_upon_completion' => 110],
+        ];
+
+        // Subtasks, die fuer jeden Task angelegt werden sollen.
+        $subtasks = [
+            ['title' => 'Ticket umsetzen lassen', 'points_upon_completion' => 25],
+            ['title' => 'Die Code-Änderungen prüfen', 'points_upon_completion' => 15],
+            ['title' => 'Code-Review machen lassen', 'points_upon_completion' => 35],
+            ['title' => 'Den Code-Review nachbessern lassen und prüfen', 'points_upon_completion' => 35],
+        ];
 
         // Subtasks, die fuer jeden Task angelegt werden sollen.
         /*$subtasks = [
@@ -102,10 +125,10 @@ class UsersController extends Controller
             ['title' => 'Das Bild erstellen und optimieren', 'points_upon_completion' => 20],
             ['title' => 'Den Text lesen und ggf. nachbessern', 'points_upon_completion' => 45],
             ['title' => 'Das FAQ lesen und ggf. nachbessern', 'points_upon_completion' => 20],
-        ];*/
+        ];
 
         // Subtasks, die fuer jeden Task angelegt werden sollen.
-        $subtasks = [
+        /*$subtasks = [
             // ['title' => 'Die Struktur erstellen lassen und prüfen', 'points_upon_completion' => 25],
             ['title' => 'Das Deep-Research durchführen lassen', 'points_upon_completion' => 25],
             ['title' => 'Den Text umformulieren lassen', 'points_upon_completion' => 10],
@@ -117,7 +140,7 @@ class UsersController extends Controller
             ['title' => 'Das FAQ lesen und ggf. nachbessern', 'points_upon_completion' => 20],
             // ['title' => 'Den LinkedIn-Post verfassen und nachbessern', 'points_upon_completion' => 25],
             // ['title' => 'Den LinkedIn-Post veröffentlichen und prüfen', 'points_upon_completion' => 10],
-        ];
+        ];*/
 
         // Gemeinsame IDs fuer alle Tasks und Subtasks.
         /*$lifeAreaId = 6;
