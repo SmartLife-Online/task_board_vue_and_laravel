@@ -1,19 +1,21 @@
 <template>
   <div
-    id="exampleModal"
-    class="modal fade"
+    class="modal"
+    :class="{ 'is-open': idProject }"
     tabindex="-1"
-    :style="idProject ? 'display: flex;opacity: 1;' : ''"
+    role="dialog"
+    aria-modal="true"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 id="exampleModalLabel" class="modal-title">{{ title }}</h5>
+          <h2 class="modal-title">{{ title }}</h2>
           <button
             type="button"
             class="btn-close"
+            aria-label="Schließen"
             @click="closeModal"
-          ></button>
+          >&times;</button>
         </div>
         <div class="modal-body">
           <TasksIndex :idProject="idProject" :modal="true" />
@@ -63,12 +65,4 @@ export default {
 </script>
 
 <style scoped>
-.modal-dialog {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.modal {
-    --bs-modal-width: 1200px;
-}
 </style>

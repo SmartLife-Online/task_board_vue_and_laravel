@@ -1,39 +1,42 @@
 <template>
-  <div>
-    <h1>Task {{ idTask }}</h1>
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <p class="kicker">Bearbeiten</p>
+        <h1 class="page-title">Task {{ idTask }}</h1>
+      </div>
+    </div>
     <TaskBoardFormular :rows="formRows" :entry="task" @submitForm="handleFormSubmit">
       <div v-if="task" class="subtasks-section">
-        <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-          <h2 class="mb-0">Subtasks</h2>
-          <button type="button" class="btn btn-primary" @click="addSubtask">Add subtask</button>
+        <div class="page-head">
+          <h2 class="section-title">Subtasks</h2>
+          <button type="button" class="btn btn-secondary" @click="addSubtask">Add subtask</button>
         </div>
-        <div v-if="task.subtasks && task.subtasks.length">
-          <div v-for="(subtask, index) in task.subtasks" :key="subtask.id ?? index" class="card mb-3">
+        <div v-if="task.subtasks && task.subtasks.length" class="card-stack">
+          <div v-for="(subtask, index) in task.subtasks" :key="subtask.id ?? index" class="card">
+            <div class="card-head">
+              <p class="card-title">Subtask {{ index + 1 }}</p>
+              <button v-if="!subtask.id" type="button" class="btn btn-danger btn-sm" @click="removeSubtask(index)">Remove</button>
+            </div>
             <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <strong>Subtask {{ index + 1 }}</strong>
-                <button v-if="!subtask.id" type="button" class="btn btn-danger btn-sm" @click="removeSubtask(index)">Remove</button>
-              </div>
-              <div class="row">
-                <div class="col-md-6 form-group">
+              <div class="form-row">
+                <div class="form-field">
                   <label :for="`subtask-title-${index}`">Title</label>
                   <input :id="`subtask-title-${index}`" v-model="subtask.title" type="text" class="form-control">
                 </div>
-                <div class="col-md-6 form-group">
+                <div class="form-field">
                   <label :for="`subtask-description-${index}`">Description</label>
                   <input :id="`subtask-description-${index}`" v-model="subtask.description" type="text" class="form-control">
                 </div>
               </div>
-              <div class="row">
-                <div class="col-md-6 form-group">
+              <div class="form-row">
+                <div class="form-field">
                   <label :for="`subtask-points-${index}`">Points upon completion</label>
                   <input :id="`subtask-points-${index}`" v-model="subtask.points_upon_completion" type="text" class="form-control">
                 </div>
-                <div class="col-md-6 form-group d-flex align-items-center">
-                  <div>
-                    <label :for="`subtask-completed-${index}`" class="me-2">Completed?</label>
-                    <input :id="`subtask-completed-${index}`" v-model="subtask.completed" type="checkbox" class="form-check-input">
-                  </div>
+                <div class="form-field form-field-check">
+                  <label :for="`subtask-completed-${index}`">Completed?</label>
+                  <input :id="`subtask-completed-${index}`" v-model="subtask.completed" type="checkbox" class="form-check-input">
                 </div>
               </div>
             </div>

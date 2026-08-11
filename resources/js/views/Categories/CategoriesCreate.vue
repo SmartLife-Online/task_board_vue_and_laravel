@@ -1,6 +1,11 @@
 <template>
-    <div>
-      <h1>Add Category to Life-Area {{ idLifeArea }}</h1>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <p class="kicker">Neu anlegen</p>
+          <h1 class="page-title">Add Category to Life-Area {{ idLifeArea }}</h1>
+        </div>
+      </div>
       <TaskBoardFormular :rows="formRows" :entry="category" @submitForm="handleFormSubmit" />
     </div>
   </template>

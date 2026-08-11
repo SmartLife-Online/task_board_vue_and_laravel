@@ -1,49 +1,71 @@
 <template>
-  <div>
-    <h1>Subtasks</h1>
-    <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
-      <option value="fetchNotCompletedSubtasks">
-        Not completed
-      </option>
-      <option value="fetchCompletedSubtasks">
-        Completed
-      </option>
-      <option value="fetchSubtasks">
-        All
-      </option>
-      <option value="fetchDeletedSubtasks">
-        Deleted
-      </option>
-    </select>
+  <div class="page">
+    <div v-if="!modal" class="page-head">
+      <div>
+        <p class="kicker">Übersicht</p>
+        <h1 class="page-title">Subtasks</h1>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div>
+        <label for="subtasks-filter" class="field-label">Filter</label>
+        <select id="subtasks-filter" v-model="filterCompleted" @change="changeCompletedFilter">
+          <option value="fetchNotCompletedSubtasks">
+            Not completed
+          </option>
+          <option value="fetchCompletedSubtasks">
+            Completed
+          </option>
+          <option value="fetchSubtasks">
+            All
+          </option>
+          <option value="fetchDeletedSubtasks">
+            Deleted
+          </option>
+        </select>
+      </div>
+    </div>
     <div v-if="subtasks === undefined" class="alert alert-info">
       Loading subtasks...
     </div>
-    <table v-else-if="subtasks && filteredSubtasks.length !== 0" class="table table-bordered table-striped">
-      <th v-for="thField in thFields" :key="thField.key">
-        {{ thField.label }}
-      </th>
-      <tr v-for="subtask in filteredSubtasks" :key="subtask.id">
-        <td>{{ subtask.task }}</td>
-        <td>{{ subtask.title }}</td>
-        <td>{{ subtask.points_upon_completion }}</td>
-        <td>
-          <span v-if="subtask.completed" style="color:green">Yes</span>
-          <span v-else style="color:red">No</span>
-        </td>
-        <td>
-          <i class="btn btn-primary" :title="subtask.life_area">L</i>
-          <i class="btn btn-primary" :title="subtask.category">C</i>
-          <i v-if="subtask.project" class="btn btn-primary" :title="subtask.project">P</i>
-          <i v-if="subtask.description" class="btn btn-primary" :title="subtask.description">D</i>
-        </td>
-        <td>
-          <button v-if="!subtask.completed" @click="completeSubtask(subtask)" class="btn btn-primary" style="margin: 8px;">Complete</button>
-          <router-link :to="'/subtasks/' + subtask.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
-          <router-link :to="'/tasks/' + subtask.task_id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add Subtasks to same Task</router-link>
-          <button v-if="subtask.active" @click="deleteSubtask(subtask)" class="btn btn-primary" style="margin: 8px;">Delete</button>
-        </td>
-      </tr>
-    </table>
+    <div v-else-if="subtasks && filteredSubtasks.length !== 0" class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th v-for="thField in thFields" :key="thField.key">
+              {{ thField.label }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="subtask in filteredSubtasks" :key="subtask.id">
+            <td>{{ subtask.task }}</td>
+            <td>{{ subtask.title }}</td>
+            <td class="num">{{ subtask.points_upon_completion }}</td>
+            <td>
+              <span v-if="subtask.completed" class="state state-yes">Yes</span>
+              <span v-else class="state state-no">No</span>
+            </td>
+            <td>
+              <div class="cell-info">
+                <i class="info-badge" :title="subtask.life_area">L</i>
+                <i class="info-badge" :title="subtask.category">C</i>
+                <i v-if="subtask.project" class="info-badge" :title="subtask.project">P</i>
+                <i v-if="subtask.description" class="info-badge" :title="subtask.description">D</i>
+              </div>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button v-if="!subtask.completed" @click="completeSubtask(subtask)" class="btn btn-primary btn-sm">Complete</button>
+                <router-link :to="'/subtasks/' + subtask.id" class="btn btn-secondary btn-sm">Edit</router-link>
+                <router-link :to="'/tasks/' + subtask.task_id + '/add_subtask'" class="btn btn-ghost btn-sm">Add Subtasks to same Task</router-link>
+                <button v-if="subtask.active" @click="deleteSubtask(subtask)" class="btn btn-danger btn-sm">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-else class="alert alert-warning">
       No subtasks found.
     </div>

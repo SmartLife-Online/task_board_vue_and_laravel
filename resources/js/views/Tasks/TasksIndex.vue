@@ -1,58 +1,80 @@
 <template>
-  <div>
+  <div class="page">
     <SubtaksOfTaskModal :title="'Subtasks of &quot;' + subtasksOfTaskModalNameTask + '&quot;'" :idTask="subtasksOfTaskModalIdTask" @modalClosed="onModalClosed" />
-    <h1>Tasks</h1>
-    <select v-model="filterCompleted" style="margin: 8px;" @change="changeCompletedFilter">
-      <option value="fetchNotCompletedTasks">
-        Not completed
-      </option>
-      <option value="fetchCompletedTasks">
-        Completed
-      </option>
-      <option value="fetchTasks">
-        All
-      </option>
-      <option value="fetchDeletedTasks">
-        Deleted
-      </option>
-    </select>
+    <div v-if="!modal && !idDaySchedule" class="page-head">
+      <div>
+        <p class="kicker">Übersicht</p>
+        <h1 class="page-title">Tasks</h1>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div>
+        <label for="tasks-filter" class="field-label">Filter</label>
+        <select id="tasks-filter" v-model="filterCompleted" @change="changeCompletedFilter">
+          <option value="fetchNotCompletedTasks">
+            Not completed
+          </option>
+          <option value="fetchCompletedTasks">
+            Completed
+          </option>
+          <option value="fetchTasks">
+            All
+          </option>
+          <option value="fetchDeletedTasks">
+            Deleted
+          </option>
+        </select>
+      </div>
+    </div>
     <div v-if="tasks === undefined" class="alert alert-info">
       Loading tasks...
     </div>
-    <table v-else-if="filteredTasks.length !== 0" class="table table-bordered table-striped">
-      <th v-for="thField in thFields" :key="thField.key">
-        {{ thField.label }}
-      </th>
-      <tr v-for="task in filteredTasks" :key="task.id">
-        <td>{{ task.category }}</td>
-        <td>{{ task.project }}</td>
-        <td>{{ task.title }}</td>
-        <td>{{ task.points }}</td>
-        <td>{{ task.points_upon_completion }}</td>
-        <td>
-          <span v-if="task.completed" style="color:green">Yes</span>
-          <span v-else style="color:red">No</span>
-        </td>
-        <td>
-          <i class="btn btn-primary" :title="task.life_area">L</i>
-          <i v-if="task.description" class="btn btn-primary" :title="task.description">D</i>
-        </td>
-        <td>
-          <button v-if="!task.completed" @click="completeTask(task)" class="btn btn-primary" style="margin: 8px;">
-            Complete
-          </button>
-          <button id="modalButton" type="button" class="btn btn-primary" style="margin: 8px;" @click="subtasksOfTaskModalIdTask = task.id;subtasksOfTaskModalNameTask = task.title">
-            Subtasks
-          </button>
-          <router-link :to="'/tasks/' + task.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
-          <router-link :to="'/tasks/' + task.id + '/add_subtask'" class="btn btn-primary" style="margin: 8px;">Add subtask</router-link>
-          <router-link :to="'/categories/' + task.category_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same category</router-link>
-          <router-link v-if="task.project_id" :to="'/projects/' + task.project_id + '/add_task'" class="btn btn-primary" style="margin: 8px;">+ to same project</router-link>
-          <button v-if="task.active" @click="recalcTask(task)" class="btn btn-primary" style="margin: 8px;">Recalc</button> 
-          <button v-if="task.active" @click="deleteTask(task)" class="btn btn-primary" style="margin: 8px;">Delete</button>
-        </td>
-      </tr>
-    </table>
+    <div v-else-if="filteredTasks.length !== 0" class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th v-for="thField in thFields" :key="thField.key">
+              {{ thField.label }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="task in filteredTasks" :key="task.id">
+            <td>{{ task.category }}</td>
+            <td>{{ task.project }}</td>
+            <td>{{ task.title }}</td>
+            <td class="num">{{ task.points }}</td>
+            <td class="num">{{ task.points_upon_completion }}</td>
+            <td>
+              <span v-if="task.completed" class="state state-yes">Yes</span>
+              <span v-else class="state state-no">No</span>
+            </td>
+            <td>
+              <div class="cell-info">
+                <i class="info-badge" :title="task.life_area">L</i>
+                <i v-if="task.description" class="info-badge" :title="task.description">D</i>
+              </div>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button v-if="!task.completed" @click="completeTask(task)" class="btn btn-primary btn-sm">
+                  Complete
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" @click="subtasksOfTaskModalIdTask = task.id;subtasksOfTaskModalNameTask = task.title">
+                  Subtasks
+                </button>
+                <router-link :to="'/tasks/' + task.id" class="btn btn-secondary btn-sm">Edit</router-link>
+                <router-link :to="'/tasks/' + task.id + '/add_subtask'" class="btn btn-ghost btn-sm">Add subtask</router-link>
+                <router-link :to="'/categories/' + task.category_id + '/add_task'" class="btn btn-ghost btn-sm">+ to same category</router-link>
+                <router-link v-if="task.project_id" :to="'/projects/' + task.project_id + '/add_task'" class="btn btn-ghost btn-sm">+ to same project</router-link>
+                <button v-if="task.active" @click="recalcTask(task)" class="btn btn-ghost btn-sm">Recalc</button>
+                <button v-if="task.active" @click="deleteTask(task)" class="btn btn-danger btn-sm">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-else class="alert alert-warning">
       No tasks found.
     </div>

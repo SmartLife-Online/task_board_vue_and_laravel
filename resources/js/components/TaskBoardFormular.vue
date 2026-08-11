@@ -1,24 +1,29 @@
 <template>
-  <div>
-    <form v-if="typeof entry !== 'undefined'" @submit.prevent="handleSubmit">
-      <div v-for="(row, rowIndex) in rows" :key="rowIndex" class="row">
-        <div v-for="(field, colIndex) in row" :key="colIndex" class="col-md-6 form-group">
-          <label :for="field.name">{{ field.label }}</label>
-          <input
-            v-if="field?.type === 'checkbox'"
-            type="checkbox"
-            :checked="isCheckboxChecked(entry[field.name])"
-            @change="updateCheckboxValue(field.name, $event)"
-            class="form-check-input"
-          >
-          <input v-else :id="field.name" :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
-        </div>
+  <form v-if="typeof entry !== 'undefined'" class="form" @submit.prevent="handleSubmit">
+    <div v-for="(row, rowIndex) in rows" :key="rowIndex" class="form-row">
+      <div
+        v-for="(field, colIndex) in row"
+        :key="colIndex"
+        class="form-field"
+        :class="{ 'form-field-check': field?.type === 'checkbox' }"
+      >
+        <label :for="field.name">{{ field.label }}</label>
+        <input
+          v-if="field?.type === 'checkbox'"
+          :id="field.name"
+          type="checkbox"
+          :checked="isCheckboxChecked(entry[field.name])"
+          @change="updateCheckboxValue(field.name, $event)"
+          class="form-check-input"
+        >
+        <input v-else :id="field.name" :type="field.type || 'text'" v-model="entry[field.name]" class="form-control" :autofocus="!rowIndex && !colIndex">
       </div>
-      <slot />
-      <br>
-      <button type="submit">Submit</button>
-    </form>
-  </div>
+    </div>
+    <slot />
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
 </template>
   
 <script lang="ts">

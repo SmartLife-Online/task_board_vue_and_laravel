@@ -1,11 +1,24 @@
 <template>
-    <div>
-        User-Points: {{ user?.points }} | {{ user?.seasonPoints }} | {{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 1867) }} | {{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 10657) }}
-        <button @click="recalcUserPoints(user)" class="btn btn-primary" style="margin-right: 12px;">Recalc</button>
-        <a v-if="user?.day" :href="'/day_schedules/' + user.day_id + '/tasks'" class="btn btn-primary" style="margin-right: 12px;">Show Day {{ user.day }}</a>
-        <button v-if="user?.day" @click="completeDayScheduleById(user.day_id)" class="btn btn-primary">
-        Complete
-        </button>
+    <div class="stat-bar">
+        <div class="stat">
+            <p class="stat-label">User-Points</p>
+            <p class="stat-value">{{ user?.points }}</p>
+        </div>
+        <div class="stat">
+            <p class="stat-label">Season-Points</p>
+            <p class="stat-value">{{ user?.seasonPoints }}</p>
+        </div>
+        <div class="stat">
+            <p class="stat-label">Season-Basis</p>
+            <p class="stat-value">{{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 1867) }} | {{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 10657) }}</p>
+        </div>
+        <div class="stat-actions">
+            <button @click="recalcUserPoints(user)" class="btn btn-secondary btn-sm">Recalc</button>
+            <a v-if="user?.day" :href="'/day_schedules/' + user.day_id + '/tasks'" class="btn btn-secondary btn-sm">Show Day {{ user.day }}</a>
+            <button v-if="user?.day" @click="completeDayScheduleById(user.day_id)" class="btn btn-primary btn-sm">
+                Complete
+            </button>
+        </div>
     </div>
 </template>
     

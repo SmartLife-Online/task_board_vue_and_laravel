@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <h1>Day-Schedual {{ idDaySchedule }}</h1>
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <p class="kicker">Bearbeiten</p>
+        <h1 class="page-title">Day-Schedual {{ idDaySchedule }}</h1>
+      </div>
+    </div>
     <TaskBoardFormular :rows="formRows" :entry="daySchedule" @submitForm="handleFormSubmit" />
   </div>
 </template>

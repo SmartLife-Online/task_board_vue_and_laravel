@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <h1>Add habit to category {{ idCategory }}</h1>
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <p class="kicker">Neu anlegen</p>
+        <h1 class="page-title">Add habit to category {{ idCategory }}</h1>
+      </div>
+    </div>
     <TaskBoardFormular :rows="formRows" :entry="habit" @submitForm="handleFormSubmit" />
   </div>
 </template>

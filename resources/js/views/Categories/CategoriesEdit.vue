@@ -1,6 +1,11 @@
 <template>
-    <div>
-      <h1>Category {{ idCategory }}</h1>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <p class="kicker">Bearbeiten</p>
+          <h1 class="page-title">Category {{ idCategory }}</h1>
+        </div>
+      </div>
       <TaskBoardFormular :rows="formRows" :entry="category" @submitForm="handleFormSubmit" />
     </div>
   </template>

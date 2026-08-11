@@ -1,28 +1,43 @@
 <template>
-    <div>
-      <h1>Categories</h1>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <p class="kicker">Übersicht</p>
+          <h1 class="page-title">Categories</h1>
+        </div>
+      </div>
       <div v-if="categories === undefined" class="alert alert-info">
         Loading categories...
       </div>
-      <table v-else-if="filteredCategories.length !== 0" class="table table-bordered table-striped">
-        <th v-for="thField in thFields" :key="thField.key">
-          {{ thField.label }}
-        </th>
-        <tr v-for="category in filteredCategories" :key="category.id"> 
-          <td>{{ category.life_area }}</td>
-          <td>{{ category.title }}</td>
-          <td>{{ category.description }}</td>
-          <td>{{ category.points_multiplier_in_percent }}</td>
-          <td>{{ category.points }}</td>
-          <td>
-            <router-link :to="'/categories/' + category.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
-            <router-link :to="'/categories/' + category.id + '/add_project_to_category'" class="btn btn-primary" style="margin: 8px;">Add Project</router-link>
-            <router-link :to="'/categories/' + category.id + '/add_task'" class="btn btn-primary" style="margin: 8px;">Add Task</router-link>
-            <router-link :to="'/categories/' + category.id + '/add_habit'" class="btn btn-primary" style="margin: 8px;">Add Habit</router-link>
-            <button v-if="category.active" @click="deleteCategory(category)" class="btn btn-primary" style="margin: 8px;">Delete</button>
-          </td>
-        </tr>
-      </table>
+      <div v-else-if="filteredCategories.length !== 0" class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th v-for="thField in thFields" :key="thField.key">
+                {{ thField.label }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="category in filteredCategories" :key="category.id">
+              <td>{{ category.life_area }}</td>
+              <td>{{ category.title }}</td>
+              <td>{{ category.description }}</td>
+              <td class="num">{{ category.points_multiplier_in_percent }}</td>
+              <td class="num">{{ category.points }}</td>
+              <td>
+                <div class="row-actions">
+                  <router-link :to="'/categories/' + category.id" class="btn btn-secondary btn-sm">Edit</router-link>
+                  <router-link :to="'/categories/' + category.id + '/add_project_to_category'" class="btn btn-ghost btn-sm">Add Project</router-link>
+                  <router-link :to="'/categories/' + category.id + '/add_task'" class="btn btn-ghost btn-sm">Add Task</router-link>
+                  <router-link :to="'/categories/' + category.id + '/add_habit'" class="btn btn-ghost btn-sm">Add Habit</router-link>
+                  <button v-if="category.active" @click="deleteCategory(category)" class="btn btn-danger btn-sm">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div v-else class="alert alert-warning">
         No categories found.
       </div>

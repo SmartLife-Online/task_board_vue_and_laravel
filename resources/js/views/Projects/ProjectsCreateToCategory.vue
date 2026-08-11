@@ -1,6 +1,11 @@
 <template>
-    <div>
-      <h1>Add Project to Category {{ idCategory }}</h1>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <p class="kicker">Neu anlegen</p>
+          <h1 class="page-title">Add Project to Category {{ idCategory }}</h1>
+        </div>
+      </div>
       <TaskBoardFormular :rows="formRows" :entry="project" @submitForm="handleFormSubmit" />
     </div>
   </template>

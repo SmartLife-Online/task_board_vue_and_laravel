@@ -1,6 +1,11 @@
 <template>
-    <div>
-      <h1>Project {{ idProject }}</h1>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <p class="kicker">Bearbeiten</p>
+          <h1 class="page-title">Project {{ idProject }}</h1>
+        </div>
+      </div>
       <TaskBoardFormular :rows="formRows" :entry="project" @submitForm="handleFormSubmit" />
     </div>
   </template>

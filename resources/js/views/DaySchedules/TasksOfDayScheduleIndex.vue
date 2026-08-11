@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <h1>Day 189</h1>
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <p class="kicker">Day-Schedule</p>
+        <h1 class="page-title">Day 189</h1>
+      </div>
+    </div>
     <TasksIndex :idDaySchedule="idDaySchedule" />
   </div>
 </template>

@@ -1,6 +1,11 @@
 <template>
-    <div>
-      <h1>Subtask {{ idSubtask }}</h1>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <p class="kicker">Bearbeiten</p>
+          <h1 class="page-title">Subtask {{ idSubtask }}</h1>
+        </div>
+      </div>
       <TaskBoardFormular :rows="formRows" :entry="subtask" @submitForm="handleFormSubmit" />
     </div>
   </template>

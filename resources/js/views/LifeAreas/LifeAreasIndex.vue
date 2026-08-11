@@ -1,26 +1,41 @@
 <template>
-    <div>
-      <h1>Life-Areas</h1>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <p class="kicker">Übersicht</p>
+          <h1 class="page-title">Life-Areas</h1>
+        </div>
+      </div>
       <div v-if="lifeAreas === undefined" class="alert alert-info">
         Loading life-areas...
       </div>
-      <table v-else-if="filteredLifeAreas.length !== 0" class="table table-bordered table-striped">
-        <th v-for="thField in thFields" :key="thField.key">
-          {{ thField.label }}
-        </th>
-        <tr v-for="lifeArea in filteredLifeAreas" :key="lifeArea.id"> 
-          <td>{{ lifeArea.title }}</td>
-          <td>{{ lifeArea.description }}</td>
-          <td>{{ lifeArea.points_multiplier_in_percent }}</td>
-          <td>{{ lifeArea.points }}</td>
-          <td>{{ lifeArea.basis_points }}</td>
-          <td>
-            <router-link :to="'/life_areas/' + lifeArea.id" class="btn btn-primary" style="margin: 8px;">Edit</router-link>
-            <router-link :to="'/life_areas/' + lifeArea.id + '/add_category'" class="btn btn-primary" style="margin: 8px;">Add Category</router-link>
-            <button v-if="lifeArea.active" @click="deleteLifeArea(lifeArea)" class="btn btn-primary" style="margin: 8px;">Delete</button>
-          </td>
-        </tr>
-      </table>
+      <div v-else-if="filteredLifeAreas.length !== 0" class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th v-for="thField in thFields" :key="thField.key">
+                {{ thField.label }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="lifeArea in filteredLifeAreas" :key="lifeArea.id">
+              <td>{{ lifeArea.title }}</td>
+              <td>{{ lifeArea.description }}</td>
+              <td class="num">{{ lifeArea.points_multiplier_in_percent }}</td>
+              <td class="num">{{ lifeArea.points }}</td>
+              <td class="num">{{ lifeArea.basis_points }}</td>
+              <td>
+                <div class="row-actions">
+                  <router-link :to="'/life_areas/' + lifeArea.id" class="btn btn-secondary btn-sm">Edit</router-link>
+                  <router-link :to="'/life_areas/' + lifeArea.id + '/add_category'" class="btn btn-ghost btn-sm">Add Category</router-link>
+                  <button v-if="lifeArea.active" @click="deleteLifeArea(lifeArea)" class="btn btn-danger btn-sm">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div v-else class="alert alert-warning">
         No life-areas found.
       </div>
