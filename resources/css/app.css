@@ -167,6 +167,21 @@ html[data-theme="light"] .icon-moon { display: block; }
 .nav-link.router-link-active { color: var(--color-accent-700); border-bottom-color: var(--color-accent); font-weight: 600; }
 .nav-actions { display: flex; align-items: center; gap: 8px; }
 
+/* Kurzlebige BestÃ¤tigung fÃ¼r Aktionen wie das Kopieren der Punkte */
+.toastr {
+  position: fixed;
+  right: max(16px, var(--page-pad));
+  bottom: 22px;
+  z-index: 100;
+  max-width: min(420px, calc(100vw - 32px));
+  border-left: 8px solid var(--color-accent);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 13px 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 /* ————— Kicker: grünes Quadrat + Versalien ————— */
 .kicker {
   display: flex;
