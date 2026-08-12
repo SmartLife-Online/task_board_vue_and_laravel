@@ -2,10 +2,10 @@
   <div class="page">
     <div class="page-head">
       <div>
-        <p class="kicker">Einzel- oder Massenanlage</p>
-        <h1 class="page-title">Vorlage anwenden</h1>
+        <p class="kicker">Single or bulk creation</p>
+        <h1 class="page-title">Apply template</h1>
       </div>
-      <router-link to="/task_templates" class="btn btn-ghost">Zur Übersicht</router-link>
+      <router-link to="/task_templates" class="btn btn-ghost">Back to overview</router-link>
     </div>
 
     <div v-if="errorMessage" class="alert alert-danger" role="alert">
@@ -13,9 +13,9 @@
     </div>
     <div v-if="successMessage" class="alert" role="status">
       {{ successMessage }}
-      <router-link to="/tasks">Erstellte Tasks ansehen</router-link>
+      <router-link to="/tasks">View created tasks</router-link>
     </div>
-    <div v-if="loading" class="alert alert-info">Vorlage und Ziele werden geladen …</div>
+    <div v-if="loading" class="alert alert-info">Loading template and destinations…</div>
 
     <template v-else-if="template">
       <div class="card template-summary">
@@ -26,22 +26,22 @@
         <div class="card-body">
           <strong>{{ template.task_title }}</strong>
           <span v-if="template.task_description">{{ template.task_description }}</span>
-          <span>{{ totalPoints }} Punkte insgesamt pro vollständig erledigtem Task</span>
+          <span>{{ totalPoints }} total points per fully completed task</span>
         </div>
       </div>
 
       <form class="form" @submit.prevent="applyTemplate">
         <div class="form-row">
           <div class="form-field">
-            <label for="destination">Ziel für die neuen Tasks</label>
+            <label for="destination">Destination for the new tasks</label>
             <select id="destination" v-model="destination" required>
-              <option disabled value="">Projekt oder Kategorie wählen</option>
-              <optgroup v-if="projects.length" label="Projekte">
+              <option disabled value="">Select a project or category</option>
+              <optgroup v-if="projects.length" label="Projects">
                 <option v-for="project in projects" :key="`project-${project.id}`" :value="`project:${project.id}`">
                   {{ project.life_area }} / {{ project.category }} / {{ project.title }}
                 </option>
               </optgroup>
-              <optgroup v-if="categories.length" label="Kategorien (ohne Projekt)">
+              <optgroup v-if="categories.length" label="Categories (without a project)">
                 <option v-for="category in categories" :key="`category-${category.id}`" :value="`category:${category.id}`">
                   {{ category.life_area }} / {{ category.title }}
                 </option>
@@ -55,24 +55,24 @@
         </div>
 
         <div class="form-field">
-          <label for="task-titles">Task-Titel – einer pro Zeile</label>
+          <label for="task-titles">Task titles — one per line</label>
           <textarea id="task-titles" v-model="taskTitles" class="form-control task-title-list" rows="8" required></textarea>
           <p class="help-text">
-            Eine Zeile erstellt einen einzelnen Task; mehrere Zeilen legen alle Tasks in einem Vorgang an.
-            Aktuell: {{ parsedTitles.length }} von maximal 200 Task{{ parsedTitles.length === 1 ? '' : 's' }}.
+            One line creates a single task; multiple lines create all tasks in one operation.
+            Current: {{ parsedTitles.length }} of up to 200 task{{ parsedTitles.length === 1 ? '' : 's' }}.
           </p>
         </div>
 
         <div class="form-field form-field-check">
-          <label for="completed">Task und alle zugehörigen Subtasks direkt als erledigt markieren</label>
+          <label for="completed">Mark the task and all its subtasks as completed immediately</label>
           <input id="completed" v-model="completed" type="checkbox" class="form-check-input">
         </div>
 
         <div class="form-actions">
           <button type="submit" class="btn btn-primary" :disabled="submitting || parsedTitles.length === 0 || parsedTitles.length > 200">
-            {{ submitting ? 'Tasks werden angelegt …' : `${parsedTitles.length} Task${parsedTitles.length === 1 ? '' : 's'} anlegen` }}
+            {{ submitting ? 'Creating tasks…' : `Create ${parsedTitles.length} task${parsedTitles.length === 1 ? '' : 's'}` }}
           </button>
-          <router-link to="/task_templates" class="btn btn-ghost">Abbrechen</router-link>
+          <router-link to="/task_templates" class="btn btn-ghost">Cancel</router-link>
         </div>
       </form>
     </template>
@@ -134,7 +134,7 @@ const loadData = async (): Promise<void> => {
     ]);
 
     template.value = templateResponse.data;
-    projects.value = projectsResponse.data;
+    projects.value = projectsResponse.data.filter(project => Number(project.active) === 1);
     categories.value = categoriesResponse.data;
     taskTitles.value = templateResponse.data.task_title;
 
@@ -151,7 +151,7 @@ const loadData = async (): Promise<void> => {
       daySchedulePartId.value = '';
     }
   } catch (error) {
-    errorMessage.value = 'Die Vorlage oder die möglichen Ziele konnten nicht geladen werden.';
+    errorMessage.value = 'The template or available destinations could not be loaded.';
   } finally {
     loading.value = false;
   }
@@ -161,7 +161,7 @@ const applyTemplate = async (): Promise<void> => {
   const [destinationType, destinationId] = destination.value.split(':');
 
   if (!destinationType || !destinationId || parsedTitles.value.length === 0 || parsedTitles.value.length > 200) {
-    errorMessage.value = 'Bitte ein Ziel und zwischen 1 und 200 Task-Titeln angeben.';
+    errorMessage.value = 'Select a destination and enter between 1 and 200 task titles.';
     return;
   }
 
@@ -178,9 +178,9 @@ const applyTemplate = async (): Promise<void> => {
       day_schedule_part_id: daySchedulePartId.value || null,
     });
 
-    successMessage.value = `${response.data.created_count} Task${response.data.created_count === 1 ? '' : 's'} mit allen Subtasks erfolgreich angelegt.`;
+    successMessage.value = `${response.data.created_count} task${response.data.created_count === 1 ? '' : 's'} and all related subtasks created successfully.`;
   } catch (error) {
-    errorMessage.value = validationMessage(error, 'Die Tasks konnten nicht angelegt werden.');
+    errorMessage.value = validationMessage(error, 'The tasks could not be created.');
   } finally {
     submitting.value = false;
   }

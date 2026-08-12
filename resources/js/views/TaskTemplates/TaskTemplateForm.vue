@@ -2,35 +2,35 @@
   <div class="page">
     <div class="page-head">
       <div>
-        <p class="kicker">{{ isEditing ? 'Vorlage bearbeiten' : 'Wiederverwendbarer Ablauf' }}</p>
-        <h1 class="page-title">{{ isEditing ? 'Task-Vorlage bearbeiten' : 'Neue Task-Vorlage' }}</h1>
+        <p class="kicker">{{ isEditing ? 'Edit template' : 'Reusable workflow' }}</p>
+        <h1 class="page-title">{{ isEditing ? 'Edit Task-Template' : 'New Task-Template' }}</h1>
       </div>
-      <router-link to="/task_templates" class="btn btn-ghost">Zur Übersicht</router-link>
+      <router-link to="/task_templates" class="btn btn-ghost">Back to overview</router-link>
     </div>
 
     <div v-if="errorMessage" class="alert alert-danger" role="alert">
       {{ errorMessage }}
     </div>
-    <div v-if="loading" class="alert alert-info">Vorlage wird geladen …</div>
+    <div v-if="loading" class="alert alert-info">Loading template…</div>
 
     <form v-else class="form" @submit.prevent="submitTemplate">
       <div class="form-row">
         <div class="form-field">
-          <label for="template-name">Name der Vorlage</label>
+          <label for="template-name">Template name</label>
           <input id="template-name" v-model.trim="template.name" type="text" class="form-control" required autofocus>
         </div>
         <div class="form-field">
-          <label for="task-title">Standard-Titel des Tasks</label>
+          <label for="task-title">Default task title</label>
           <input id="task-title" v-model.trim="template.task_title" type="text" class="form-control" required>
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label for="task-description">Task-Beschreibung</label>
+          <label for="task-description">Task description</label>
           <textarea id="task-description" v-model="template.task_description" class="form-control" rows="3"></textarea>
         </div>
         <div class="form-field">
-          <label for="task-points">Task-Punkte bei Abschluss</label>
+          <label for="task-points">Task points upon completion</label>
           <input id="task-points" v-model.number="template.task_points_upon_completion" type="number" min="0" class="form-control" required>
         </div>
       </div>
@@ -38,10 +38,10 @@
       <section class="subtasks-section">
         <div class="page-head">
           <div>
-            <h2 class="section-title">Subtasks der Vorlage</h2>
-            <p class="help-text">Die Reihenfolge wird beim Erstellen der Tasks übernommen.</p>
+            <h2 class="section-title">Template subtasks</h2>
+            <p class="help-text">This order is preserved when tasks are created.</p>
           </div>
-          <button type="button" class="btn btn-secondary" @click="addSubtask">Subtask hinzufügen</button>
+          <button type="button" class="btn btn-secondary" @click="addSubtask">Add subtask</button>
         </div>
 
         <div class="card-stack">
@@ -50,29 +50,29 @@
               <p class="card-title">Subtask {{ index + 1 }}</p>
               <div class="row-actions">
                 <button type="button" class="btn btn-ghost btn-sm" :disabled="index === 0" @click="moveSubtask(index, -1)">
-                  Nach oben
+                  Move up
                 </button>
                 <button type="button" class="btn btn-ghost btn-sm" :disabled="index === template.subtasks.length - 1" @click="moveSubtask(index, 1)">
-                  Nach unten
+                  Move down
                 </button>
                 <button type="button" class="btn btn-danger btn-sm" :disabled="template.subtasks.length === 1" @click="removeSubtask(index)">
-                  Entfernen
+                  Remove
                 </button>
               </div>
             </div>
             <div class="card-body">
               <div class="form-row">
                 <div class="form-field">
-                  <label :for="`subtask-title-${index}`">Titel</label>
+                  <label :for="`subtask-title-${index}`">Title</label>
                   <input :id="`subtask-title-${index}`" v-model.trim="subtask.title" type="text" class="form-control" required>
                 </div>
                 <div class="form-field">
-                  <label :for="`subtask-points-${index}`">Punkte bei Abschluss</label>
+                  <label :for="`subtask-points-${index}`">Points upon completion</label>
                   <input :id="`subtask-points-${index}`" v-model.number="subtask.points_upon_completion" type="number" min="0" class="form-control" required>
                 </div>
               </div>
               <div class="form-field">
-                <label :for="`subtask-description-${index}`">Beschreibung</label>
+                <label :for="`subtask-description-${index}`">Description</label>
                 <textarea :id="`subtask-description-${index}`" v-model="subtask.description" class="form-control" rows="2"></textarea>
               </div>
             </div>
@@ -82,9 +82,9 @@
 
       <div class="form-actions">
         <button type="submit" class="btn btn-primary" :disabled="submitting">
-          {{ submitting ? 'Wird gespeichert …' : 'Vorlage speichern' }}
+          {{ submitting ? 'Saving…' : 'Save template' }}
         </button>
-        <router-link to="/task_templates" class="btn btn-ghost">Abbrechen</router-link>
+        <router-link to="/task_templates" class="btn btn-ghost">Cancel</router-link>
       </div>
     </form>
   </div>
@@ -165,7 +165,7 @@ const loadTemplate = async (): Promise<void> => {
       })),
     };
   } catch (error) {
-    errorMessage.value = 'Die Vorlage konnte nicht geladen werden.';
+    errorMessage.value = 'The template could not be loaded.';
   } finally {
     loading.value = false;
   }
@@ -194,7 +194,7 @@ const submitTemplate = async (): Promise<void> => {
 
     await router.push('/task_templates');
   } catch (error) {
-    errorMessage.value = validationMessage(error, 'Die Vorlage konnte nicht gespeichert werden.');
+    errorMessage.value = validationMessage(error, 'The template could not be saved.');
   } finally {
     submitting.value = false;
   }

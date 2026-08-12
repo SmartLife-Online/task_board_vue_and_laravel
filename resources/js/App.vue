@@ -7,7 +7,7 @@
             <router-link to="/categories" class="nav-link">Categories</router-link>
             <router-link to="/projects" class="nav-link">Projects</router-link>
             <router-link to="/tasks" class="nav-link">Tasks</router-link>
-            <router-link to="/task_templates" class="nav-link">Task-Vorlagen</router-link>
+            <router-link to="/task_templates" class="nav-link">Task-Templates</router-link>
             <router-link to="/subtasks" class="nav-link">Subtasks</router-link>
             <router-link to="/habits" class="nav-link">Habits</router-link>
         </div>
