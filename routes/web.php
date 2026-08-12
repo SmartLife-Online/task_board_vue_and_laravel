@@ -1,14 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsersController;
-use App\Http\Controllers\LifeAreasController;
 use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\ProjectsController;
-use App\Http\Controllers\TasksController;
-use App\Http\Controllers\SubtasksController;
-use App\Http\Controllers\HabitController;
 use App\Http\Controllers\DaySchedulesController;
+use App\Http\Controllers\HabitController;
+use App\Http\Controllers\LifeAreasController;
+use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\SubtasksController;
+use App\Http\Controllers\TasksController;
+use App\Http\Controllers\TaskTemplatesController;
+use App\Http\Controllers\UsersController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +66,13 @@ Route::patch('api/v1/tasks/{idTask}/complete', [TasksController::class, 'complet
 Route::patch('api/v1/tasks/{idTask}/recalc_task', [TasksController::class, 'recalcTask'])->name('api.tasks.recalcTask');
 Route::delete('api/v1/tasks/{idTask}', [TasksController::class, 'delete'])->name('api.tasks.delete');
 
+Route::get('api/v1/task_templates', [TaskTemplatesController::class, 'index'])->name('api.task_templates.index');
+Route::get('api/v1/task_templates/{idTaskTemplate}', [TaskTemplatesController::class, 'get'])->name('api.task_templates.get');
+Route::post('api/v1/task_templates', [TaskTemplatesController::class, 'store'])->name('api.task_templates.store');
+Route::put('api/v1/task_templates/{idTaskTemplate}', [TaskTemplatesController::class, 'update'])->name('api.task_templates.update');
+Route::post('api/v1/task_templates/{idTaskTemplate}/instantiate', [TaskTemplatesController::class, 'instantiate'])->name('api.task_templates.instantiate');
+Route::delete('api/v1/task_templates/{idTaskTemplate}', [TaskTemplatesController::class, 'delete'])->name('api.task_templates.delete');
+
 Route::get('api/v1/day_schedules/all/{idDaySchedule}', [TasksController::class, 'indexFromDaySchedule'])->name('api.tasks.indexFromDaySchedule');
 Route::get('api/v1/day_schedules/not_completed/{idDaySchedule}', [TasksController::class, 'indexNotCompletedFromDaySchedule'])->name('api.tasks.indexNotCompletedFromDaySchedule');
 Route::get('api/v1/day_schedules/completed/{idDaySchedule}', [TasksController::class, 'indexCompletedFromDaySchedule'])->name('api.tasks.indexCompletedFromDaySchedule');
@@ -116,4 +124,3 @@ Route::delete('api/v1/habits/{idHabit}', [HabitController::class, 'delete'])->na
 Route::get('/{vue_capture?}', function () {
     return view('app');
 })->where('vue_capture', '[\/\w\.-]*');
-

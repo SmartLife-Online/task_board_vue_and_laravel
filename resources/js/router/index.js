@@ -14,6 +14,9 @@ import TasksOfDayScheduleIndex from '../views/DaySchedules/TasksOfDayScheduleInd
 import TasksCreateToCategory from '../views/Tasks/TasksCreateToCategory.vue';
 import TasksCreateToProject from '../views/Tasks/TasksCreateToProject.vue';
 import TasksEdit from '../views/Tasks/TasksEdit.vue';
+import TaskTemplatesIndex from '../views/TaskTemplates/TaskTemplatesIndex.vue';
+import TaskTemplateForm from '../views/TaskTemplates/TaskTemplateForm.vue';
+import TaskTemplateApply from '../views/TaskTemplates/TaskTemplateApply.vue';
 import SubtasksIndex from '../views/Subtasks/SubtasksIndex.vue';
 import SubtasksCreate from '../views/Subtasks/SubtasksCreate.vue';
 import SubtasksEdit from '../views/Subtasks/SubtasksEdit.vue';
@@ -130,6 +133,26 @@ const routes = [
     path: '/tasks/:id/add_subtask',
     name: 'SubtasksCreate',
     component: SubtasksCreate
+  },
+  {
+    path: '/task_templates',
+    name: 'TaskTemplatesIndex',
+    component: TaskTemplatesIndex
+  },
+  {
+    path: '/task_templates/create',
+    name: 'TaskTemplatesCreate',
+    component: TaskTemplateForm
+  },
+  {
+    path: '/task_templates/:id/edit',
+    name: 'TaskTemplatesEdit',
+    component: TaskTemplateForm
+  },
+  {
+    path: '/task_templates/:id/apply',
+    name: 'TaskTemplatesApply',
+    component: TaskTemplateApply
   },
   {
     path: '/subtasks',
