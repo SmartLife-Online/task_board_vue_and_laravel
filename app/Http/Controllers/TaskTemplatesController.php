@@ -182,7 +182,16 @@ class TaskTemplatesController extends Controller
     private function resolveDestination(string $type, int $id): array
     {
         if ($type === 'project') {
-            $project = Project::findActive($id);
+            $project = Project::where('id', $id)
+                ->where('active', true)
+                ->where('completed', false)
+                ->first();
+
+            if (! $project) {
+                abort(response()->json([
+                    'message' => 'Active, incomplete project not found',
+                ], 404));
+            }
 
             return [
                 'life_area_id' => $project->life_area_id,

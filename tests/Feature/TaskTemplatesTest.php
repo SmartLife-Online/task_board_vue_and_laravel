@@ -109,6 +109,26 @@ class TaskTemplatesTest extends TestCase
             ->assertJsonPath('tasks.0.completed', false);
     }
 
+    public function test_a_completed_project_cannot_be_used_as_a_template_destination(): void
+    {
+        $templateId = $this->postJson('/api/v1/task_templates', $this->templatePayload())
+            ->assertCreated()
+            ->json('id');
+
+        $this->project->update([
+            'completed' => true,
+            'completed_at' => now(),
+        ]);
+
+        $this->postJson('/api/v1/task_templates/'.$templateId.'/instantiate', [
+            'destination_type' => 'project',
+            'destination_id' => $this->project->id,
+        ])->assertNotFound()
+            ->assertJsonPath('message', 'Active, incomplete project not found');
+
+        $this->assertDatabaseCount('tasks', 0);
+    }
+
     private function templatePayload(): array
     {
         return [

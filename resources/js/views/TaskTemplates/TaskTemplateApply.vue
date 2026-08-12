@@ -134,7 +134,9 @@ const loadData = async (): Promise<void> => {
     ]);
 
     template.value = templateResponse.data;
-    projects.value = projectsResponse.data.filter(project => Number(project.active) === 1);
+    projects.value = projectsResponse.data.filter(project => (
+      Number(project.active) === 1 && Number(project.completed) === 0
+    ));
     categories.value = categoriesResponse.data;
     taskTitles.value = templateResponse.data.task_title;
 
