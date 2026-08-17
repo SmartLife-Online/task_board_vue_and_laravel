@@ -255,6 +255,22 @@ class TasksController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function completeWithSubtasks(int $idTask): JsonResponse
+    {
+        $task = Task::findActive($idTask);
+        if (! $task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $this->syncCompletedState($task, true);
+
+        $task->update();
+
+        $task->completeSubtasks();
+
+        return response()->json(['success' => true]);
+    }
+
     public function recalcTask(int $idTask, Request $request): JsonResponse
     {
         $task = Task::findActive($idTask);

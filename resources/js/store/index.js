@@ -360,6 +360,15 @@ const store = createStore({
         console.error('Error completing Task:', error);
       }
     },
+    async completeTaskWithSubtasks({ commit }, task) {
+      try {
+        const response = await axios.patch(tasksApiString + task.id + '/complete_with_subtasks');
+
+        task.completed = true;
+      } catch (error) {
+        console.error('Error completing Task with its Subtasks:', error);
+      }
+    },
     async recalcTask({ commit }, task) {
       try {
         const response = await axios.patch(tasksApiString + task.id + '/recalc_task');

@@ -174,6 +174,19 @@ class Task extends Model
         $subtask->completed_at = null;
     }
 
+    public function completeSubtasks(): void
+    {
+        foreach ($this->subtasks as $subtask) {
+            if ($subtask->completed) {
+                continue;
+            }
+
+            $this->syncSubtaskCompletedState($subtask, true);
+
+            $subtask->update();
+        }
+    }
+
     private function applySubtaskData(Subtask $subtask, array $subtaskData): void
     {
         $subtask->life_area_id = $this->life_area_id;
