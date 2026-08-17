@@ -60,6 +60,9 @@
                 <button v-if="!task.completed" @click="completeTask(task)" class="btn btn-primary btn-sm">
                   Complete
                 </button>
+                <button v-if="!task.completed" @click="completeTaskWithSubtasks(task)" class="btn btn-primary btn-sm">
+                  Complete incl. subtasks
+                </button>
                 <button type="button" class="btn btn-secondary btn-sm" @click="subtasksOfTaskModalIdTask = task.id;subtasksOfTaskModalNameTask = task.title">
                   Subtasks
                 </button>
@@ -178,6 +181,10 @@ export default {
       await store.dispatch('completeTask', task);
     };
 
+    const completeTaskWithSubtasks = async (task) => {
+      await store.dispatch('completeTaskWithSubtasks', task);
+    };
+
     const onModalClosed = () => {
       subtasksOfTaskModalIdTask.value = 0;
       subtasksOfTaskModalNameTask.value = '';
@@ -201,6 +208,7 @@ export default {
       filterCompleted,
       changeCompletedFilter,
       completeTask,
+      completeTaskWithSubtasks,
       recalcTask,
       deleteTask
     };

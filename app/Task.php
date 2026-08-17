@@ -174,6 +174,19 @@ class Task extends Model
         $subtask->completed_at = null;
     }
 
+    public function completeSubtasks(): void
+    {
+        foreach ($this->subtasks as $subtask) {
+            if ($subtask->completed) {
+                continue;
+            }
+
+            $this->syncSubtaskCompletedState($subtask, true);
+
+            $subtask->update();
+        }
+    }
+
     private function applySubtaskData(Subtask $subtask, array $subtaskData): void
     {
         $subtask->life_area_id = $this->life_area_id;
@@ -246,6 +259,23 @@ class Task extends Model
         if (isset($data['subtasks']) && is_array($data['subtasks'])) {
             $this->createSubtasks($data['subtasks']);
         }
+    }
+
+    public function applyPointsUponCompletionFromSubtasks(): void
+    {
+        if ((int) $this->points_upon_completion > 0) {
+            return;
+        }
+
+        $pointsUponCompletion = (int) $this->subtasks()->sum('points_upon_completion');
+
+        if ($pointsUponCompletion <= 0) {
+            return;
+        }
+
+        $this->points_upon_completion = $pointsUponCompletion;
+
+        $this->save();
     }
 
     public function recalcPoints()

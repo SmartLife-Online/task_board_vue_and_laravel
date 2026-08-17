@@ -137,7 +137,7 @@ class TasksController extends Controller
         $task->project_id = null;
         $task->title = $request->title;
         $task->description = $request->description;
-        $task->points_upon_completion = $request->points_upon_completion;
+        $task->points_upon_completion = (int) $request->points_upon_completion;
         $task->day_schedule_part_id = $request->day_schedule_part_id ?? null;
         $this->syncCompletedState($task, $request->boolean('completed'));
 
@@ -146,6 +146,8 @@ class TasksController extends Controller
         if (is_array($request->subtasks)) {
             $task->createSubtasks($request->subtasks);
         }
+
+        $task->applyPointsUponCompletionFromSubtasks();
 
         $daySchedule = DaySchedule::getCurrentDay();
         if ($daySchedule) {
@@ -169,7 +171,7 @@ class TasksController extends Controller
         $task->project_id = $project->id;
         $task->title = $request->title;
         $task->description = $request->description;
-        $task->points_upon_completion = $request->points_upon_completion;
+        $task->points_upon_completion = (int) $request->points_upon_completion;
         $task->day_schedule_part_id = $request->day_schedule_part_id ?? null;
         $this->syncCompletedState($task, $request->boolean('completed'));
 
@@ -198,6 +200,8 @@ class TasksController extends Controller
             $task->createSubtasksByJSONString($output);
         }
 
+        $task->applyPointsUponCompletionFromSubtasks();
+
         $daySchedule = DaySchedule::getCurrentDay();
         if ($daySchedule) {
             $task->day_schedule_id = $daySchedule->id;
@@ -215,7 +219,7 @@ class TasksController extends Controller
 
         $task->title = $request->title;
         $task->description = $request->description;
-        $task->points_upon_completion = $request->points_upon_completion;
+        $task->points_upon_completion = (int) $request->points_upon_completion;
         $task->day_schedule_part_id = $request->day_schedule_part_id ?: null;
         $this->syncCompletedState($task, $request->boolean('completed'));
 
@@ -232,6 +236,8 @@ class TasksController extends Controller
                 $subtask->update();
             }
         }
+
+        $task->applyPointsUponCompletionFromSubtasks();
 
         $daySchedule = DaySchedule::getCurrentDay();
         if ($daySchedule) {
@@ -251,6 +257,22 @@ class TasksController extends Controller
         $this->syncCompletedState($task, true);
 
         $task->update();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function completeWithSubtasks(int $idTask): JsonResponse
+    {
+        $task = Task::findActive($idTask);
+        if (! $task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $this->syncCompletedState($task, true);
+
+        $task->update();
+
+        $task->completeSubtasks();
 
         return response()->json(['success' => true]);
     }
