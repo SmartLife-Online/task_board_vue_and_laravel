@@ -10,7 +10,7 @@
         </div>
         <div class="stat">
             <p class="stat-label">Season-Basis</p>
-            <p class="stat-value">{{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 1867) }} | {{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 10657) }}</p>
+            <p class="stat-value">{{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 1867) }} | {{ Math.floor((user?.seasonBasisPoints || 0) / 50 - 14278) }}</p>
         </div>
         <div class="stat-actions">
             <button @click="recalcUserPoints(user)" class="btn btn-secondary btn-sm">Recalc</button>
