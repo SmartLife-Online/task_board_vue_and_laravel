@@ -261,6 +261,23 @@ class Task extends Model
         }
     }
 
+    public function applyPointsUponCompletionFromSubtasks(): void
+    {
+        if ((int) $this->points_upon_completion > 0) {
+            return;
+        }
+
+        $pointsUponCompletion = (int) $this->subtasks()->sum('points_upon_completion');
+
+        if ($pointsUponCompletion <= 0) {
+            return;
+        }
+
+        $this->points_upon_completion = $pointsUponCompletion;
+
+        $this->save();
+    }
+
     public function recalcPoints()
     {
         $this->points = 0;
